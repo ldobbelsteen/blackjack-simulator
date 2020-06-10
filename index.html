@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Blackjack Simulator</title>
+        <meta charset="utf-8">
+        <script src="main.js"></script>
+        <link rel="stylesheet" href="style.css"/>
+        <meta name="theme-color" content="#1a1a1a">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Advanced and fast blackjack simulator to calculate the house edge given your strategy and rules">
+    </head>
+    <body>
+        <header>
+            <h1>Blackjack Simulator</h1>
+        </header>
+        <main>
+            <p>A simulator for the popular card game blackjack. It simulates millions of blackjack games in seconds and calculates your average profit/loss and other statistics, given the strategy you play with and the house rules you’re using. It implements the game of blackjack to a very detailed level so the results are representative of real-world results. Do realise, however, that these results are only achieved on the long-term and on the short-term your results will vary wildly. The simulator’s speed is dependent on your device’s processing power as it is run locally. Only modern browsers are supported. This project is open source and can be found <a href="https://github.com/ldobbelsteen/blackjack-simulator">here</a>. You can also visit my main webpage <a href="https://www.dobbel.dev">here</a>.</p>
+            <div id="settings">
+                <h3>Settings</h3>
+                <table>
+                    <tr>
+                        <td>1. Allow surrender</td>
+                        <td><input type="radio" name="allow-surrender" value="late">Late</td>
+                        <td><input type="radio" name="allow-surrender" value="early">Early</td>
+                        <td><input type="radio" name="allow-surrender" value="never" checked>Never</td>
+                    </tr>
+                    <tr>
+                        <td>2. Allow double-down</td>
+                        <td><input type="radio" name="allow-double" value="always" checked>Always</td>
+                        <td><input type="radio" name="allow-double" value="restricted">9, 10, 11</td>
+                        <td><input type="radio" name="allow-double" value="never">Never</td>
+                    </tr>
+                    <tr>
+                        <td>3. Allow splitting</td>
+                        <td><input type="radio" name="allow-splitting" value="always">Always</td>
+                        <td><input type="radio" name="allow-splitting" value="restricted" checked><input type="number" style="width:2em" id="max-splits" min="1" max="7" value="3">&nbspmax</td>
+                        <td><input type="radio" name="allow-splitting" value="never">Never</td>
+                    </tr>
+                    <tr>
+                        <td>4. Allow hitting of split aces</td>
+                        <td><input type="radio" name="allow-hitting-split-aces" value="true">Yes</td>
+                        <td><input type="radio" name="allow-hitting-split-aces" value="false" checked>No</td>
+                    </tr>
+                    <tr>
+                        <td>5. Allow resplitting of aces</td>
+                        <td><input type="radio" name="allow-resplitting-aces" value="true">Yes</td>
+                        <td><input type="radio" name="allow-resplitting-aces" value="false" checked>No</td>
+                    </tr>
+                    <tr>
+                        <td>6. Allow double-down after splitting</td>
+                        <td><input type="radio" name="allow-double-after-split" value="true" checked>Yes</td>
+                        <td><input type="radio" name="allow-double-after-split" value="false">No</td>
+                    </tr>
+                    <tr>
+                        <td>7. Triple 7 bonus</td>
+                        <td><input type="radio" name="triple-seven-bonus" value="true">Yes</td>
+                        <td><input type="radio" name="triple-seven-bonus" value="false" checked>No</td>
+                    </tr>
+                    <tr>
+                        <td>8. Dealer's move for soft 17</td>
+                        <td><input type="radio" name="dealer-hits-soft-17" value="true" checked>Hit</td>
+                        <td><input type="radio" name="dealer-hits-soft-17" value="false">Stand</td>
+                    </tr>
+                    <tr>
+                        <td>9. Blackjack payout</td>
+                        <td><input type="radio" name="blackjack-payout" value="1.5" checked>3 to 2</td>
+                        <td><input type="radio" name="blackjack-payout" value="1.2">6 to 5</td>
+                    </tr>
+                    <tr>
+                        <td>10. Shuffle after each game</td>
+                        <td><input type="radio" name="shuffle-each-game" value="true">Yes</td>
+                        <td><input type="radio" name="shuffle-each-game" value="false" checked>No</td>
+                    </tr>
+                    <tr>
+                        <td>11. Deck penetration</td>
+                        <td colspan="3"><input type="number" id="deck-penetration" style="width:3em" min="5" max="90" value="75">&nbsp%</td>
+                    </tr>
+                    <tr>
+                        <td>12. Number of decks</td>
+                        <td colspan="3"><input type="number" id="deck-count" style="width:3em" min="2" max="8" value="6">&nbspdecks</td>
+                    </tr>
+                    <tr>
+                        <td>13. Maximum amount of games</td>
+                        <td colspan="3"><input type="number" id="max-games" style="width:8em" min="0" max="10000000000" step="200000000" value="100000000">&nbspgames</td>
+                    </tr>
+                    <tr>
+                        <td>14. Number of threads</td>
+                        <td colspan="3"><input type="number" id="thread-count" style="width:3em" min="1" max="1" value="1">&nbspthreads</td>
+                    </tr>
+                </table>
+                <button>More information</button>
+                <div>
+                    <p>1. Surrendering is a starting move in which the player gives up their hand and loses half of their bet. It can only be done on the initial hand and therefore not after splitting. With late surrender, the player gets to keep half of their bet only if the dealer doesn’t have a blackjack, else they lose their entire bet. With early surrender the player always gets to keep half of their bet regardless of the dealer’s cards.</p>
+                    <p>2. Double-down is a move where the player doubles their initial bet and receives just one more card. It is only available on the initial hand or directly after splitting. After this move the hand is completely frozen. This option is offered at most casino's, but some only allow double-down on a hand with a value of 9, 10 or 11.</p>
+                    <p>3. Splitting is a move where the player creates two new hands out of one hand consisting of two cards with the same value. The player has to put down another bet equal to the initial bet at the newly created hand. The first of two hands receives a new card and the player can play this hand just like normal. Once this 'side' is done the second hand gets a card and the same thing happens. If the new hand is a pair again, the player can decide to split again. Most casino's restrict the amount of splits to a number normally between 1 and 3. Some casino's allow unlimited splits and then the 'always' setting should be used.</p>
+                    <p>4. This setting influences whether or not the player is allowed to hit or double-down after having split a pair of aces. Most casino's don't allow this.</p>
+                    <p>5. This settings influences whether or not the player is allowed to split once more after having split aces and receiving another ace. Most casino's don't allow this.</p>
+                    <p>6. This settings influences whether the player is allowed to double-down on a hand after having split. Some casino's don't allow this.</p>
+                    <p>7. Hand out a bonus equal to the initial bet to the player if they happen to have a hand consisting of three sevens (excluding hands that have been split before).</p>
+                    <p>8. The move of the dealer when they get a soft 17 hand. This differs wildly accross regions; for example in Las Vegas they almost universally hit and in Europe they almost always stand.</p>
+                    <p>9. The payout the player gets when they have a blackjack. The traditional payout is 3 to 2, meaning the player wins 1.5x their bet (on top of getting back their initial bet). Some casinos offer a 6 to 5 payout, meaning the player wins just 1.2x their bet.</p>
+                    <p>10. Determines whether the simulator shuffles the deck after each game instead of when the deck has reached the deck penetration threshold. Setting this to 'yes' significantly reduces the simulator's performance, as the shuffling process is quite resource intensive, especially using the maximum amount.</p>
+                    <p>11. The minimum percentage of cards that have already been played for the dealer to decide to reshuffle the deck. This is basically at which percentage the 'cut card' is put.</p>
+                    <p>12. The number of decks to play the game with. Most common are 4, 6 and 8 decks.</p>
+                    <p>13. The limit at which the simulator decides to stop as to prevent the simulator from going on infinitely.</p>
+                    <p>14. The amount of 'web worker' threads the simulator uses. The default value is half of the threads available on your device. In general, more threads results in faster simulation. Do keep in mind that more threads will slow down your device more during calculations.</p>
+                </div>
+            </div>
+            <h3>Strategy</h3>
+            <p>The strategy the player uses is expressed in three tables. The top row is the dealer's upcard and the side row is the player's total hand value. 'Hard' is the strategy for when you have a normal hand, 'Soft' is for when you have at least one ace which is compressible to 1 and 'Pair' is for when you have a pair. It can be edited at will, given you use the standard letter combinations. The first letter gives the preferred move and the second gives the move if the first one isn't allowed in a particular situation. H = hit, S = stand, D = double-down, P = split, R = surrender, Ph = split if double-down after splitting is allowed, else hit. The default strategy filled in here is pretty much the standard basic strategy in the industry.</p>
+            <div id="strategy">
+                <div>
+                    <div>
+                        <h3>Hard</h3>
+                        <table>
+                            <tr>
+                                <th></th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>
+                                <th>5</th>
+                                <th>6</th>
+                                <th>7</th>
+                                <th>8</th>
+                                <th>9</th>
+                                <th>10</th>
+                                <th>11</th>
+                            </tr>
+                            <tr>
+                                <th>20</th>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                            </tr>
+                            <tr>
+                                <th>19</th>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                            </tr>
+                            <tr>
+                                <th>18</th>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                            </tr>
+                            <tr>
+                                <th>17</th>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="Rs"></td>
+                            </tr>
+                            <tr>
+                                <th>16</th>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="Rh"></td>
+                                <td><input value="Rh"></td>
+                                <td><input value="Rh"></td>
+                            </tr>
+                            <tr>
+                                <th>15</th>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="Rh"></td>
+                                <td><input value="Rh"></td>
+                            </tr>
+                            <tr>
+                                <th>14</th>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>13</th>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>12</th>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>11</th>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>10</th>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>9</th>
+                                <td><input value="H"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>8</th>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>7</th>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>6</th>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>5</th>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>4</th>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <h3>Soft</h3>
+                        <table>
+                            <tr>
+                                <th></th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>
+                                <th>5</th>
+                                <th>6</th>
+                                <th>7</th>
+                                <th>8</th>
+                                <th>9</th>
+                                <th>10</th>
+                                <th>11</th>
+                            </tr>
+                            <tr>
+                                <th>11+9</th>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                            </tr>
+                            <tr>
+                                <th>11+8</th>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="Ds"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                            </tr>
+                            <tr>
+                                <th>11+7</th>
+                                <td><input value="Ds"></td>
+                                <td><input value="Ds"></td>
+                                <td><input value="Ds"></td>
+                                <td><input value="Ds"></td>
+                                <td><input value="Ds"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>11+6</th>
+                                <td><input value="H"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>11+5</th>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>11+4</th>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>11+3</th>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>11+2</th>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>11+1</th>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <h3>Pair</h3>
+                        <table>
+                            <tr>
+                                <th></th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>
+                                <th>5</th>
+                                <th>6</th>
+                                <th>7</th>
+                                <th>8</th>
+                                <th>9</th>
+                                <th>10</th>
+                                <th>11</th>
+                            </tr>
+                            <tr>
+                                <th>AA</th>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                            </tr>
+                            <tr>
+                                <th>TT</th>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                            </tr>
+                            <tr>
+                                <th>99</th>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="S"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="S"></td>
+                                <td><input value="S"></td>
+                            </tr>
+                            <tr>
+                                <th>88</th>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="Rp"></td>
+                            </tr>
+                            <tr>
+                                <th>77</th>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>66</th>
+                                <td><input value="Ph"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>55</th>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="Dh"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>44</th>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="Ph"></td>
+                                <td><input value="Ph"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>33</th>
+                                <td><input value="Ph"></td>
+                                <td><input value="Ph"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                            <tr>
+                                <th>22</th>
+                                <td><input value="Ph"></td>
+                                <td><input value="Ph"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="P"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                                <td><input value="H"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <h3>Results</h3>
+            <p>Starting the simulation is simply done by pressing the button below. You can let the simulation run for as long as you want, but it will stop at the set maximum amount of games in the settings. The results are also below and are updated live as the simulation goes on. The balance is relative to your starting capital given you bet 1 unit each game as a base bet. The house edge is the average percentage of your base bet you lose/win to the house per game. For example, a house edge of 1% would mean you lose 1 cent every game.</p>
+            <div id="results">
+                <button></button>
+                <p>Total games played: &nbsp<span>...</span></p>
+                <p>Total simulation time: &nbsp<span>...</span></p>
+                <p>Average simulations per second: &nbsp<span>...</span></p>
+                <p>Balance: &nbsp<span>...</span></p>
+                <p>House edge: &nbsp<span>...</span></p>
+                <p>Wins: &nbsp<span>...</span></p>
+                <p>Pushes: &nbsp<span>...</span></p>
+                <p>Losses: &nbsp<span>...</span></p>
+                <p>Wins after doubling: &nbsp<span>...</span></p>
+                <p>Pushes after doubling: &nbsp<span>...</span></p>
+                <p>Losses after doubling: &nbsp<span>...</span></p>
+                <p>Blackjacks: &nbsp<span>...</span></p>
+                <p>Surrenders: &nbsp<span>...</span></p>
+                <p>Splits: &nbsp<span>...</span></p>
+            </div>
+        </main>
+        <footer>
+            <span>Copyright © 2020 Lukas Dobbelsteen</span>
+        </footer>
+    </body>
+</html>

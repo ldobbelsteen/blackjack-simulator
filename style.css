@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+
+html, body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #1a1a1a;
+    color: #e5e5e5;
+    margin: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    color: inherit;
+}
+
+input {
+    font-family: inherit;
+}
+
+button {
+    background-color: #2a2a2a;
+    font-family: inherit;
+    color: inherit;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    width: 100%;
+    padding: 1em;
+    font-weight: 700;
+    transition-duration: 0.3s;
+}
+
+button:hover {
+    background-color: #3a3a3a;
+}
+
+header {
+    padding: 2em;
+    padding-bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+    padding-left: 0.5em;
+}
+
+header a {
+    text-decoration: none;
+}
+
+header img {
+    width: 5em;
+    height: 5em;
+}
+
+main {
+    flex: 1 0 auto;
+    padding: 1em;
+    max-width: 840px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+footer {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    font-size: 0.8em;
+    text-align: center;
+    align-items: center;
+    left: 0;
+    bottom: 0;
+    width: 100%;    
+    background: #2a2a2a;
+    color: #a1a1a1;
+}
+
+#settings {
+    border: 0.25em solid #2a2a2a;
+    padding: 0.8em;
+    font-size: 0.8em;
+}
+
+#settings h3 {
+    margin: 0;
+    margin-bottom: 0.5em;
+}
+
+#settings table {
+    width: 100%;
+}
+
+#settings div {
+    display: none;
+    background-color: #2a2a2a;
+    padding: 0.1em 1em;
+    margin-top: 0.5em;
+}
+
+#settings button {
+    margin-top: 0.5em;
+}
+
+#strategy {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#strategy div div {
+    text-align: center;
+    background-color: #2a2a2a;
+    margin: 0.4em;
+    padding: 0.4em;
+}
+
+#strategy div div:nth-child(2) {
+    margin-top: 1em;
+}
+
+#strategy input {
+    vertical-align: middle;
+    text-align: center;
+    width: 1.8em;
+    height: 1.8em;
+    color: inherit;
+    border-width: 0px;
+    color: #1a1a1a;
+    font-size: 1em;
+}
+
+#strategy h3 {
+    margin: 0;
+    margin-bottom: 0.5em;
+    margin-top: 0.5em;
+}
+
+#strategy table {
+    border-spacing: 1px;
+}
+
+#results {
+    border: 0.25em solid #2a2a2a;
+    padding: 1em;
+}
