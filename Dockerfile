@@ -1,5 +1,3 @@
-FROM caddy
-WORKDIR /data
-COPY www .
+FROM nginx
+COPY www /usr/share/nginx/html
 EXPOSE 80
-CMD caddy file-server
