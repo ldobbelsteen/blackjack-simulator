@@ -163,7 +163,7 @@ function simulate() {
 	}
 	
 	for (let i = 0; i < threads; i++) {
-		let engine = new Worker("engine.js")
+		let engine = new Worker("js/engine.js")
 		engine.onmessage = (result) => {
 			Object.keys(result.data).forEach((key) => {
 				stats[key] += result.data[key]
