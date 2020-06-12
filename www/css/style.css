@@ -48,13 +48,9 @@ header h1 {
     padding-left: 0.5em;
 }
 
-header a {
-    text-decoration: none;
-}
-
 header img {
-    width: 5em;
-    height: 5em;
+    width: 2em;
+    height: 2em;
 }
 
 main {
