@@ -86,24 +86,15 @@ window.onload = () => {
 					let td = document.createElement("td")
 					let input = document.createElement("input")
 					input.value = cell
+					input.onclick = function() { this.select() }
+					input.onchange = function() { updateCell(this) }
+					updateCell(input)
 					td.appendChild(input)
 					tr.appendChild(td)
 				}
 			})
 			table.appendChild(tr)
 		})
-	}
-
-	// Make strategy table cells interactive
-	let strategyCells = document.getElementById("strategy").getElementsByTagName("input")
-	for (let i = 0; i < strategyCells.length; i++) {
-		updateCell(strategyCells[i])
-		strategyCells[i].onclick = function() {
-			this.select()
-		}
-		strategyCells[i].onchange = function() {
-			updateCell(this)
-		}
 	}
 
 	// Make start button start the simulation
