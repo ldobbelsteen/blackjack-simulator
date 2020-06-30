@@ -7,7 +7,7 @@ window.onload = () => {
 	threadSetting.max = threads
 	threadSetting.value = Math.floor(threads / 2)
 
-	// Initilalize settings button
+	// Initialize settings button
 	let settingsButton = document.getElementById("settings").getElementsByTagName("button")[0]
 	let settingsContainer = document.getElementById("settings").getElementsByTagName("div")[0]
 	settingsButton.onclick = () => {
