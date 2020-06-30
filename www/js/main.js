@@ -78,7 +78,7 @@ window.onload = () => {
 		strategy.forEach((row, rIndex) => {
 			let tr = document.createElement("tr")
 			row.forEach((cell, cIndex) => {
-				if (rIndex == 0 || cIndex == 0) {
+				if (rIndex === 0 || cIndex === 0) {
 					let th = document.createElement("th")
 					th.innerHTML = cell
 					tr.appendChild(th)
@@ -114,23 +114,23 @@ window.onload = () => {
 
 // Update the color and text of a cell
 function updateCell(cell) {
-	if (cell.value.length == 2) {
+	if (cell.value.length === 2) {
 		cell.value = cell.value.charAt(0).toUpperCase() + cell.value.charAt(1).toLowerCase()
 	}
-	if (cell.value.length == 1) {
+	if (cell.value.length === 1) {
 		cell.value = cell.value.toUpperCase()
 	}
-	if (cell.value == "S") {
+	if (cell.value === "S") {
 		cell.style.backgroundColor = "#ED7A63"
-	} else if (cell.value == "H") {
+	} else if (cell.value === "H") {
 		cell.style.backgroundColor = "#43B68D"
-	} else if (cell.value == "P") {
+	} else if (cell.value === "P") {
 		cell.style.backgroundColor = "#57C7F7"
-	} else if (cell.value == "Dh" || cell.value == "Ds") {
+	} else if (cell.value === "Dh" || cell.value === "Ds") {
 		cell.style.backgroundColor = "#E4D601"
-	} else if (cell.value == "Rh" || cell.value == "Rs") {
+	} else if (cell.value === "Rh" || cell.value === "Rs") {
 		cell.style.backgroundColor = "#F6A239"
-	} else if (cell.value == "Rp" || cell.value == "Ph") {
+	} else if (cell.value === "Rp" || cell.value === "Ph") {
 		cell.style.backgroundColor = "#F6A239"
 	} else {
 		cell.style.backgroundColor = "#FF0000"
@@ -259,7 +259,7 @@ function simulate() {
 		} else {
 			engine.terminate()
 			finishedThreads++
-			if (finishedThreads == threads) {
+			if (finishedThreads === threads) {
 				startButton.onclick = undefined
 				startButton.textContent = "Done!"
 				setTimeout(() => {
