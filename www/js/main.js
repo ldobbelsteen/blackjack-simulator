@@ -20,8 +20,79 @@ window.onload = () => {
 		}
 	}
 
-	// Create the tables for changing strategy
-	createStrategyTables()
+	// Default strategies
+	let hardStrategy = [
+		[null, "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"],
+		["20", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"],
+		["19", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"],
+		["18", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"],
+		["17", "S", "S", "S", "S", "S", "S", "S", "S", "S", "Rs"],
+		["16", "S", "S", "S", "S", "S", "H", "H", "Rh", "Rh", "Rh"],
+		["15", "S", "S", "S", "S", "S", "H", "H", "H", "Rh", "Rh"],
+		["14", "S", "S", "S", "S", "S", "H", "H", "H", "H", "H"],
+		["13", "S", "S", "S", "S", "S", "H", "H", "H", "H", "H"],
+		["12", "H", "H", "S", "S", "S", "H", "H", "H", "H", "H"],
+		["11", "Dh", "Dh", "Dh", "Dh", "Dh", "Dh", "Dh", "Dh", "Dh", "H"],
+		["10", "Dh", "Dh", "Dh", "Dh", "Dh", "Dh", "Dh", "Dh", "H", "H"],
+		["9", "H", "Dh", "Dh", "Dh", "Dh", "H", "H", "H", "H", "H"],
+		["8", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
+		["7", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
+		["6", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
+		["5", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
+		["4", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"]
+	]
+	let softStrategy = [
+		[null, "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"],
+		["11+9", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"],
+		["11+8", "S", "S", "S", "S", "Ds", "S", "S", "S", "S", "S"],
+		["11+7", "Ds", "Ds", "Ds", "Ds", "Ds", "S", "S", "H", "H", "H"],
+		["11+6", "H", "Dh", "Dh", "Dh", "Dh", "H", "H", "H", "H", "H"],
+		["11+5", "H", "H", "Dh", "Dh", "Dh", "H", "H", "H", "H", "H"],
+		["11+4", "H", "H", "Dh", "Dh", "Dh", "H", "H", "H", "H", "H"],
+		["11+3", "H", "H", "H", "Dh", "Dh", "H", "H", "H", "H", "H"],
+		["11+2", "H", "H", "H", "Dh", "Dh", "H", "H", "H", "H", "H"],
+		["11+1", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"]
+	]
+	let pairStrategy = [
+		[null, "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"],
+		["AA", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P"],
+		["TT", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"],
+		["99", "P", "P", "P", "P", "P", "S", "P", "P", "S", "S"],
+		["88", "P", "P", "P", "P", "P", "P", "P", "P", "P", "Rp"],
+		["77", "P", "P", "P", "P", "P", "P", "H", "H", "H", "H"],
+		["66", "Ph", "P", "P", "P", "P", "H", "H", "H", "H", "H"],
+		["55", "Dh", "Dh", "Dh", "Dh", "Dh", "Dh", "Dh", "Dh", "H", "H"],
+		["44", "H", "H", "H", "Ph", "Ph", "H", "H", "H", "H", "H"],
+		["33", "Ph", "Ph", "P", "P", "P", "P", "H", "H", "H", "H"],
+		["22", "Ph", "Ph", "P", "P", "P", "P", "H", "H", "H", "H"],
+	]
+
+	// Write default strategies to the tables
+	let tables = document.getElementById("strategy").getElementsByTagName("table")
+	appendStrategy(hardStrategy, tables[0])
+	appendStrategy(softStrategy, tables[1])
+	appendStrategy(pairStrategy, tables[2])
+
+	// Append certain strategy to a table object
+	function appendStrategy(strategy, table) {
+		strategy.forEach((row, rIndex) => {
+			let tr = document.createElement("tr")
+			row.forEach((cell, cIndex) => {
+				if (rIndex == 0 || cIndex == 0) {
+					let th = document.createElement("th")
+					th.innerHTML = cell
+					tr.appendChild(th)
+				} else {
+					let td = document.createElement("td")
+					let input = document.createElement("input")
+					input.value = cell
+					td.appendChild(input)
+					tr.appendChild(td)
+				}
+			})
+			table.appendChild(tr)
+		})
+	}
 
 	// Make strategy table cells interactive
 	let strategyCells = document.getElementById("strategy").getElementsByTagName("input")
@@ -231,76 +302,5 @@ function createStrategyTables() {
 	softContainer.appendChild(softTable)
 	pairContainer.appendChild(pairTable)
 
-	// Default strategies
-	let hardStrategy = [
-		[null, "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"],
-		["20", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"],
-		["19", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"],
-		["18", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"],
-		["17", "S", "S", "S", "S", "S", "S", "S", "S", "S", "Rs"],
-		["16", "S", "S", "S", "S", "S", "H", "H", "Rh", "Rh", "Rh"],
-		["15", "S", "S", "S", "S", "S", "H", "H", "H", "Rh", "Rh"],
-		["14", "S", "S", "S", "S", "S", "H", "H", "H", "H", "H"],
-		["13", "S", "S", "S", "S", "S", "H", "H", "H", "H", "H"],
-		["12", "H", "H", "S", "S", "S", "H", "H", "H", "H", "H"],
-		["11", "Dh", "Dh", "Dh", "Dh", "Dh", "Dh", "Dh", "Dh", "Dh", "H"],
-		["10", "Dh", "Dh", "Dh", "Dh", "Dh", "Dh", "Dh", "Dh", "H", "H"],
-		["9", "H", "Dh", "Dh", "Dh", "Dh", "H", "H", "H", "H", "H"],
-		["8", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
-		["7", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
-		["6", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
-		["5", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
-		["4", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"]
-	]
-	let softStrategy = [
-		[null, "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"],
-		["11+9", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"],
-		["11+8", "S", "S", "S", "S", "Ds", "S", "S", "S", "S", "S"],
-		["11+7", "Ds", "Ds", "Ds", "Ds", "Ds", "S", "S", "H", "H", "H"],
-		["11+6", "H", "Dh", "Dh", "Dh", "Dh", "H", "H", "H", "H", "H"],
-		["11+5", "H", "H", "Dh", "Dh", "Dh", "H", "H", "H", "H", "H"],
-		["11+4", "H", "H", "Dh", "Dh", "Dh", "H", "H", "H", "H", "H"],
-		["11+3", "H", "H", "H", "Dh", "Dh", "H", "H", "H", "H", "H"],
-		["11+2", "H", "H", "H", "Dh", "Dh", "H", "H", "H", "H", "H"],
-		["11+1", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"]
-	]
-	let pairStrategy = [
-		[null, "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"],
-		["AA", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P"],
-		["TT", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"],
-		["99", "P", "P", "P", "P", "P", "S", "P", "P", "S", "S"],
-		["88", "P", "P", "P", "P", "P", "P", "P", "P", "P", "Rp"],
-		["77", "P", "P", "P", "P", "P", "P", "H", "H", "H", "H"],
-		["66", "Ph", "P", "P", "P", "P", "H", "H", "H", "H", "H"],
-		["55", "Dh", "Dh", "Dh", "Dh", "Dh", "Dh", "Dh", "Dh", "H", "H"],
-		["44", "H", "H", "H", "Ph", "Ph", "H", "H", "H", "H", "H"],
-		["33", "Ph", "Ph", "P", "P", "P", "P", "H", "H", "H", "H"],
-		["22", "Ph", "Ph", "P", "P", "P", "P", "H", "H", "H", "H"],
-	]
-
-	// Populate the tables with the strategies
-	appendStrategy(hardStrategy, hardTable)
-	appendStrategy(softStrategy, softTable)
-	appendStrategy(pairStrategy, pairTable)
-
-	// Append certain strategy to a table object
-	function appendStrategy(strategy, table) {
-		strategy.forEach((row, rIndex) => {
-			let tr = document.createElement("tr")
-			row.forEach((cell, cIndex) => {
-				if (rIndex == 0 || cIndex == 0) {
-					let th = document.createElement("th")
-					th.innerHTML = cell
-					tr.appendChild(th)
-				} else {
-					let td = document.createElement("td")
-					let input = document.createElement("input")
-					input.value = cell
-					td.appendChild(input)
-					tr.appendChild(td)
-				}
-			})
-			table.appendChild(tr)
-		})
-	}
+	
 }
