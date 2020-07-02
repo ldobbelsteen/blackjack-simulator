@@ -261,37 +261,3 @@ function simulate() {
 		}
 	}
 }
-
-// Add the tables to the strategy div with default values
-function createStrategyTables() {
-
-	// Create strategy containers
-	let strategyContainer = document.getElementById("strategy")
-	let firstContainer = document.createElement("div")
-	let secondContainer = document.createElement("div")
-	strategyContainer.appendChild(firstContainer)
-	strategyContainer.appendChild(secondContainer)
-
-	// Populate containers table containers
-	let hardContainer = document.createElement("div")
-	let softContainer = document.createElement("div")
-	let pairContainer = document.createElement("div")
-	firstContainer.appendChild(hardContainer)
-	secondContainer.appendChild(softContainer)
-	secondContainer.appendChild(pairContainer)
-
-	// Add headers to the tables
-	hardContainer.insertAdjacentHTML("afterbegin", "<h3>Hard</h3>")
-	softContainer.insertAdjacentHTML("afterbegin", "<h3>Soft</h3>")
-	pairContainer.insertAdjacentHTML("afterbegin", "<h3>Pair</h3>")
-
-	// Create tables
-	let hardTable = document.createElement("table")
-	let softTable = document.createElement("table")
-	let pairTable = document.createElement("table")
-	hardContainer.appendChild(hardTable)
-	softContainer.appendChild(softTable)
-	pairContainer.appendChild(pairTable)
-
-	
-}
