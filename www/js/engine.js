@@ -2,6 +2,7 @@ var rules // To hold ruleset between instructions
 var stats // To keep track of statistics of an instruction
 var deckIndex // To keep track of how deep into the deck we are
 var deck // To hold the currently used deck
+var randomBuffer // To hold an array of random values for shuffling
 
 // When receiving a ruleset, load it and create a deck
 // When receiving an integer, simulate that amount of games
@@ -18,6 +19,7 @@ this.onmessage = (msg) => {
         index++
       }
     }
+    randomBuffer = new Uint32Array(deck.length)
     shuffleDeck()
   }
 }
@@ -98,10 +100,12 @@ function aceCount (hand) {
   return hand.reduce((a, b) => (b === 11 ? a + 1 : a), 0)
 }
 
-// Shuffle the global deck using the Knuth algorithm
+// Shuffle the global deck using the Fisher-Yates algorithm
+// This gets its random values from the Crypto web API to achieve higher randomness than Math.random()
 function shuffleDeck () {
+  this.self.crypto.getRandomValues(randomBuffer)
   for (let i = deck.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor((randomBuffer[i] / (0xffffffff + 1)) * (i + 1));
     [deck[i], deck[j]] = [deck[j], deck[i]]
   }
   deckIndex = deck.length - 1
