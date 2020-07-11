@@ -4,8 +4,7 @@ var stats // To keep track of statistics of a single instruction
 var deckIndex // To keep track of how deep into the deck we are
 var randomBytes // To hold an array of random values required for shuffling
 
-// When receiving a ruleset, load it and create a deck
-// When receiving an integer, simulate that amount of games
+// Interaction with main thread
 this.onmessage = (msg) => {
   if (Number.isInteger(msg.data)) {
     simulate(msg.data)
@@ -25,7 +24,6 @@ this.onmessage = (msg) => {
 }
 
 // Simulate a given amount of games
-// Needs 'rules' and 'deck' to be specified
 function simulate (count) {
   stats = {
     games: 0,
@@ -100,8 +98,7 @@ function aceCount (hand) {
   return hand.reduce((a, b) => (b === 11 ? a + 1 : a), 0)
 }
 
-// Shuffle the global deck using the Fisher-Yates algorithm
-// This gets its random values from the Crypto web API to achieve higher randomness than Math.random()
+// Shuffle the global deck using the Fisher-Yates algorithm and Crypto web API
 function shuffleDeck () {
   this.self.crypto.getRandomValues(randomBytes)
   for (let i = deck.length - 1; i > 0; i--) {
