@@ -149,23 +149,12 @@ function updateResults (stats) {
   result[13].textContent = stats.splits.toLocaleString()
 }
 
-// Main function to fetch rules, rev up some engines and control them
-function simulate () {
-  const startButton = document.getElementById('results').getElementsByTagName('button')[0]
-  let stopMessages = false
-  startButton.textContent = 'Stop simulation'
-  startButton.onclick = () => {
-    startButton.onclick = undefined
-    startButton.textContent = 'Killing thread(s)...'
-    stopMessages = true
-  }
-
+// Read the rules and strategy from the DOM
+function getRules () {
   const rules = {}
-
   rules.hardStrategy = []
   rules.softStrategy = []
   rules.pairStrategy = []
-
   const hardStrategyTable = document.getElementById('strategy').getElementsByTagName('table')[0]
   const softStrategyTable = document.getElementById('strategy').getElementsByTagName('table')[1]
   const pairStrategyTable = document.getElementById('strategy').getElementsByTagName('table')[2]
@@ -204,11 +193,20 @@ function simulate () {
   rules.shuffleEachGame = document.querySelector('input[name="shuffle-each-game"]:checked').value === 'true'
   rules.deckPenetration = parseInt(document.getElementById('deck-penetration').value)
   rules.deckCount = parseInt(document.getElementById('deck-count').value)
+  rules.isRuleset = true
+  return rules
+}
 
-  let maxGames = parseInt(document.getElementById('max-games').value)
-  const chunk = 200000
-  const threads = parseInt(document.getElementById('thread-count').value)
-  let finishedThreads = 0
+// Main function to start the engines and control them
+function simulate () {
+  const startButton = document.getElementById('results').getElementsByTagName('button')[0]
+  let stopMessages = false
+  startButton.textContent = 'Stop simulation'
+  startButton.onclick = () => {
+    startButton.onclick = undefined
+    startButton.textContent = 'Killing thread(s)...'
+    stopMessages = true
+  }
 
   const stats = {
     startTime: new Date(),
@@ -224,40 +222,38 @@ function simulate () {
     surrenders: 0,
     splits: 0
   }
+
+  const chunk = 200000
+  const rules = getRules()
+  const timer = setInterval(() => updateResults(stats), 500)
+  const threads = parseInt(document.getElementById('thread-count').value)
+  var games = parseInt(document.getElementById('max-games').value)
+  let finishedThreads = 0
+
   for (let i = 0; i < threads; i++) {
     const engine = new window.Worker('js/engine.js')
     engine.onmessage = (result) => {
+      if (games > 0 && !stopMessages) {
+        const count = games >= chunk ? chunk : games
+        engine.postMessage(count)
+        games -= count
+      } else {
+        engine.terminate()
+        finishedThreads++
+        if (finishedThreads === threads) {
+          setTimeout(() => clearInterval(timer), 1000)
+          startButton.onclick = undefined
+          startButton.textContent = 'Done!'
+          setTimeout(() => {
+            startButton.textContent = 'Start simulation'
+            startButton.onclick = simulate
+          }, 2000)
+        }
+      }
       Object.keys(result.data).forEach((key) => {
         stats[key] += result.data[key]
       })
-      instructWorker(engine)
     }
     engine.postMessage(rules)
-    instructWorker(engine)
-  }
-
-  const timer = setInterval(() => updateResults(stats), 50)
-
-  function instructWorker (engine) {
-    if (maxGames >= chunk && !stopMessages) {
-      engine.postMessage(chunk)
-      maxGames -= chunk
-    } else if (maxGames > 0 && !stopMessages) {
-      engine.postMessage(maxGames)
-      maxGames = 0
-    } else {
-      engine.terminate()
-      finishedThreads++
-      if (finishedThreads === threads) {
-        clearInterval(timer)
-        updateResults(stats)
-        startButton.onclick = undefined
-        startButton.textContent = 'Done!'
-        setTimeout(() => {
-          startButton.textContent = 'Start simulation'
-          startButton.onclick = simulate
-        }, 2000)
-      }
-    }
   }
 }
