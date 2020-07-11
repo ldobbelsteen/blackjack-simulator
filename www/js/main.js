@@ -230,12 +230,13 @@ function simulate () {
       Object.keys(result.data).forEach((key) => {
         stats[key] += result.data[key]
       })
-      updateResults(stats)
       instructWorker(engine)
     }
     engine.postMessage(rules)
     instructWorker(engine)
   }
+
+  const timer = setInterval(() => updateResults(stats), 50)
 
   function instructWorker (engine) {
     if (maxGames >= chunk && !stopMessages) {
@@ -248,6 +249,8 @@ function simulate () {
       engine.terminate()
       finishedThreads++
       if (finishedThreads === threads) {
+        clearInterval(timer)
+        updateResults(stats)
         startButton.onclick = undefined
         startButton.textContent = 'Done!'
         setTimeout(() => {
