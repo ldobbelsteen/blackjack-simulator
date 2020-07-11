@@ -225,7 +225,8 @@ function simulate () {
 
   const chunk = 200000
   const rules = getRules()
-  const timer = setInterval(() => updateResults(stats), 500)
+  const updateInterval = 100
+  const timer = setInterval(() => updateResults(stats), updateInterval)
   const threads = parseInt(document.getElementById('thread-count').value)
   var games = parseInt(document.getElementById('max-games').value)
   let finishedThreads = 0
@@ -241,7 +242,7 @@ function simulate () {
         engine.terminate()
         finishedThreads++
         if (finishedThreads === threads) {
-          setTimeout(() => clearInterval(timer), 1000)
+          setTimeout(() => clearInterval(timer), updateInterval + 1)
           startButton.onclick = undefined
           startButton.textContent = 'Done!'
           setTimeout(() => {
