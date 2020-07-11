@@ -130,14 +130,14 @@ function updateCell (cell) {
 // Update the results box with statistics
 function updateResults (stats) {
   const result = document.getElementById('results').getElementsByTagName('span')
-  const time = ((new Date() - stats.startTime) / 1000)
+  const time = (new Date() - stats.startTime) / 1000
   const speed = Math.round(((stats.games / 1000000) / time) * 10) / 10
-  const houseEdge = (-100 * (stats.balance / stats.games))
+  const houseEdge = -100 * (stats.balance / stats.games)
   result[0].textContent = stats.games.toLocaleString()
   result[1].textContent = time.toLocaleString() + ' seconds'
   result[2].textContent = speed.toLocaleString() + ' million'
   result[3].textContent = stats.balance.toLocaleString()
-  result[4].textContent = houseEdge.toLocaleString() + ' %'
+  result[4].textContent = isNaN(houseEdge) ? '0 %' : houseEdge.toLocaleString() + ' %'
   result[5].textContent = stats.winsNormal.toLocaleString()
   result[6].textContent = stats.pushesNormal.toLocaleString()
   result[7].textContent = stats.lossesNormal.toLocaleString()
