@@ -6,25 +6,6 @@ var randomBytes // To hold an array of random values required for shuffling
 
 // Interaction with main thread
 this.onmessage = (msg) => {
-  if (Number.isInteger(msg.data)) {
-    simulate(msg.data)
-  } else {
-    rules = msg.data
-    deck = new Array(rules.deckCount * 52)
-    randomBytes = new Uint32Array(deck.length)
-    for (let card = 2, index = 0; card <= 11; card++) {
-      const amount = (card === 10) ? 16 * rules.deckCount : 4 * rules.deckCount
-      for (let k = 0; k < amount; k++) {
-        deck[index] = card
-        index++
-      }
-    }
-    shuffleDeck()
-  }
-}
-
-// Simulate a given amount of games
-function simulate (count) {
   stats = {
     games: 0,
     balance: 0,
@@ -38,6 +19,26 @@ function simulate (count) {
     surrenders: 0,
     splits: 0
   }
+  if (msg.data.isRuleset) {
+    rules = msg.data
+    deck = new Array(rules.deckCount * 52)
+    randomBytes = new Uint32Array(deck.length)
+    for (let card = 2, index = 0; card <= 11; card++) {
+      const amount = (card === 10) ? 16 * rules.deckCount : 4 * rules.deckCount
+      for (let k = 0; k < amount; k++) {
+        deck[index] = card
+        index++
+      }
+    }
+    shuffleDeck()
+  } else {
+    simulate(msg.data)
+  }
+  this.postMessage(stats)
+}
+
+// Simulate a given amount of games
+function simulate (count) {
   const deckThreshold = ((100 - rules.deckPenetration) / 100) * rules.deckCount * 52
   for (let i = 0; i < count; i++) {
     playGame()
@@ -46,7 +47,6 @@ function simulate (count) {
       shuffleDeck()
     }
   }
-  this.postMessage(stats)
 }
 
 // Play a single full game
