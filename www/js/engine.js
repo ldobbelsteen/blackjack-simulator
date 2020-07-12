@@ -1,8 +1,7 @@
 var deck // To hold the deck in between instructions
 var rules // To hold ruleset in between instructions
 var stats // To keep track of statistics of a single instruction
-var deckIndex // To keep track of how deep into the deck we are
-var randomBytes // To hold an array of random values required for shuffling
+var random // To hold an array of random values required for shuffling
 
 // Interaction with main thread
 this.onmessage = (msg) => {
@@ -22,7 +21,7 @@ this.onmessage = (msg) => {
   if (msg.data.isRuleset) {
     rules = msg.data
     deck = new Array(rules.deckCount * 52)
-    randomBytes = new Uint32Array(deck.length)
+    random = new Uint32Array(deck.length)
     for (let card = 2, index = 0; card <= 11; card++) {
       const amount = (card === 10) ? 16 * rules.deckCount : 4 * rules.deckCount
       for (let k = 0; k < amount; k++) {
@@ -43,7 +42,7 @@ function simulate (count) {
   for (let i = 0; i < count; i++) {
     playGame()
     stats.games++
-    if (deckIndex < deckThreshold || rules.shuffleEachGame) {
+    if (deck.index < deckThreshold || rules.shuffleEachGame) {
       shuffleDeck()
     }
   }
@@ -100,17 +99,17 @@ function aceCount (hand) {
 
 // Shuffle the global deck using the Fisher-Yates algorithm and Crypto web API
 function shuffleDeck () {
-  this.self.crypto.getRandomValues(randomBytes)
+  this.self.crypto.getRandomValues(random)
   for (let i = deck.length - 1; i > 0; i--) {
-    const j = Math.floor((randomBytes[i] / (0xffffffff + 1)) * (i + 1));
+    const j = Math.floor((random[i] / (0xffffffff + 1)) * (i + 1));
     [deck[i], deck[j]] = [deck[j], deck[i]]
   }
-  deckIndex = deck.length - 1
+  deck.index = deck.length - 1
 }
 
 // Take a card from the deck
 function takeCard () {
-  return deck[deckIndex--]
+  return deck[deck.index--]
 }
 
 // Simulate the player's actions on a given hand
