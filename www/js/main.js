@@ -201,7 +201,7 @@ function getRules () {
 // Main function to start the engines and control them
 function simulate () {
   const startButton = document.getElementById('results').getElementsByTagName('button')[0]
-  let stopMessages = false
+  var stopMessages = false
   startButton.textContent = 'Stop simulation'
   startButton.onclick = () => {
     startButton.onclick = undefined
@@ -210,7 +210,7 @@ function simulate () {
   }
 
   const stats = {
-    startTime: new Date(),
+    startTime: 0,
     games: 0,
     balance: 0,
     winsNormal: 0,
@@ -239,6 +239,9 @@ function simulate () {
         const count = games >= chunk ? chunk : games
         engine.postMessage(count)
         games -= count
+        if (stats.startTime === 0) {
+          stats.startTime = Date.now()
+        }
       } else {
         engine.terminate()
         finishedThreads++
