@@ -108,7 +108,7 @@ function playGame () {
   // Simulate the player's turn, recursing when splitting
   function playerTurn (hand, isFirstHand) {
     const result = playHand(hand, splitAllowed, isFirstHand, dealerStartingHand[0])
-    if (result === null) {
+    if (result === undefined) {
       if (rules.earlySurrender || !(dealerStartingHandValue === 21)) {
         stats.surrenders++
         stats.balance -= 0.5
