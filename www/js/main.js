@@ -221,7 +221,8 @@ function simulate () {
     lossesAfterDoubling: 0,
     blackjacks: 0,
     surrenders: 0,
-    splits: 0
+    splits: 0,
+    tripleSevenBonuses: 0
   }
 
   const meanChunkSize = 200000
