@@ -224,21 +224,24 @@ function simulate () {
     splits: 0
   }
 
-  const chunk = 200000
+  const meanChunkSize = 200000
+  const minChunkSize = Math.ceil(meanChunkSize * 0.8)
+  const maxChunkSize = Math.ceil(meanChunkSize * 1.2)
   const rules = getRules()
   const updateInterval = 100
   const timer = setInterval(() => updateResults(stats), updateInterval)
   const threads = parseInt(document.getElementById('thread-count').value)
   var games = parseInt(document.getElementById('max-games').value)
-  let finishedThreads = 0
+  var finishedThreads = 0
 
   for (let i = 0; i < threads; i++) {
     const engine = new window.Worker('js/engine.js')
     engine.onmessage = (result) => {
       if (games > 0 && !stopMessages) {
+        const chunk = Math.floor(Math.random() * (maxChunkSize - minChunkSize) + minChunkSize)
         const count = games >= chunk ? chunk : games
-        engine.postMessage(count)
         games -= count
+        engine.postMessage(count)
         if (stats.startTime === 0) {
           stats.startTime = Date.now()
         }
