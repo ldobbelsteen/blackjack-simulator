@@ -108,23 +108,83 @@ function playGame () {
   // Simulate the player's turn, recursing when splitting
   function playerTurn (hand, isFirstHand) {
     splitAllowed = !(splitCount >= rules.maxSplits)
-    const result = playHand(hand, splitAllowed, isFirstHand, dealerStartingHand[0])
-    if (result === undefined) {
-      if (rules.earlySurrender || !(dealerStartingHandValue === 21)) {
-        stats.surrenders++
-        stats.balance -= 0.5
-      } else {
-        stats.lossesNormal++
-        stats.balance -= 1
+    if (!isFirstHand && !rules.allowHittingSplitAces && hand[0] === 11 && !(hand[0] === 11 && hand[1] === 11 && rules.allowResplittingAces)) {
+      if (handValue(hand) > 21) {
+        hand[0] = 1
       }
-      return 0
-    } else if (result.split) {
-      stats.splits++
-      splitCount++
-      playerTurn([result[0], takeCard()], false)
-      playerTurn([result[1], takeCard()], false)
-    } else {
-      playerFinalHands.push(result)
+      playerFinalHands.push(hand)
+      return
+    }
+    var move
+    var skipWhile = false
+    while (!skipWhile) {
+      if (handValue(hand) === 21) {
+        playerFinalHands.push(hand)
+        return
+      }
+      if (hand[0] === hand[1] && hand.length === 2) {
+        move = rules.pairStrategy[handValue(hand)][dealerStartingHand[0]]
+      } else if (aceCount(hand) > 0) {
+        move = rules.softStrategy[handValue(hand)][dealerStartingHand[0]]
+      } else {
+        move = rules.hardStrategy[handValue(hand)][dealerStartingHand[0]]
+      }
+      if (move.charAt(0) === 'R') {
+        if (rules.allowSurrender && isFirstHand && hand.length === 2) {
+          if (rules.earlySurrender || !(dealerStartingHandValue === 21)) {
+            stats.surrenders++
+            stats.balance -= 0.5
+          } else {
+            stats.lossesNormal++
+            stats.balance -= 1
+          }
+          return
+        } else {
+          move = move.charAt(1).toUpperCase()
+        }
+      }
+      if (move.charAt(0) === 'D') {
+        if (!rules.allowDouble || hand.length > 2 || (!rules.allowDoubleAfterSplit && !isFirstHand) || (rules.doubleRestricted && !(handValue(hand) === 9) && !(handValue(hand) === 10) && !(handValue(hand) === 11))) {
+          move = move.charAt(1).toUpperCase()
+        } else {
+          hand.push(takeCard())
+          hand.doubled = true
+          skipWhile = true
+        }
+      }
+      if (move.charAt(0) === 'P') {
+        if (move === 'Ph' && !rules.allowDoubleAfterSplit) {
+          move = 'H'
+        } else {
+          if (splitAllowed && rules.allowSplitting) {
+            stats.splits++
+            splitCount++
+            playerTurn([hand[0], takeCard()], false)
+            playerTurn([hand[1], takeCard()], false)
+            return
+          } else {
+            hand.push(0)
+          }
+        }
+      }
+      if (move === 'H') {
+        hand.push(takeCard())
+      }
+      if (move === 'S') {
+        playerFinalHands.push(hand)
+        return
+      }
+      while (aceCount(hand) > 0 && handValue(hand) > 21) {
+        hand[hand.indexOf(11)] = 1
+      }
+      if (aceCount(hand) === 0 && handValue(hand) > 21) {
+        playerFinalHands.push(hand)
+        return
+      }
+      if (hand.doubled) {
+        playerFinalHands.push(hand)
+        return
+      }
     }
   }
 
@@ -201,71 +261,4 @@ function playGame () {
       }
     }
   }
-}
-
-// Simulate the player's actions on a given hand
-function playHand (hand, splitAvailable, isFirstHand, dealerUpcard) {
-  hand.doubled = false
-  hand.split = false
-  var skipWhile = false
-  var move
-  if (!isFirstHand && !rules.allowHittingSplitAces && hand[0] === 11 && !(hand[0] === 11 && hand[1] === 11 && rules.allowResplittingAces)) {
-    if (handValue(hand) > 21) {
-      hand[0] = 1
-    }
-    skipWhile = true
-  }
-  while (!skipWhile) {
-    if (handValue(hand) === 21) {
-      break
-    }
-    if (hand[0] === hand[1] && hand.length === 2) {
-      move = rules.pairStrategy[handValue(hand)][dealerUpcard]
-    } else if (aceCount(hand) > 0) {
-      move = rules.softStrategy[handValue(hand)][dealerUpcard]
-    } else {
-      move = rules.hardStrategy[handValue(hand)][dealerUpcard]
-    }
-    if (move.charAt(0) === 'R') {
-      if (rules.allowSurrender && isFirstHand && hand.length === 2) {
-        return
-      } else {
-        move = move.charAt(1).toUpperCase()
-      }
-    }
-    if (move.charAt(0) === 'D') {
-      if (!rules.allowDouble || hand.length > 2 || (!rules.allowDoubleAfterSplit && !isFirstHand) || (rules.doubleRestricted && !(handValue(hand) === 9) && !(handValue(hand) === 10) && !(handValue(hand) === 11))) {
-        move = move.charAt(1).toUpperCase()
-      } else {
-        hand.push(takeCard())
-        hand.doubled = true
-        skipWhile = true
-      }
-    }
-    if (move.charAt(0) === 'P') {
-      if (move === 'Ph' && !rules.allowDoubleAfterSplit) {
-        move = 'H'
-      } else {
-        if (splitAvailable && rules.allowSplitting) {
-          hand.split = true
-          return hand
-        } else {
-          hand.push(0)
-        }
-      }
-    }
-    if (move === 'H') {
-      hand.push(takeCard())
-    }
-    if (move === 'S') {
-      break
-    }
-    while (aceCount(hand) > 0 && handValue(hand) > 21) {
-      hand[hand.indexOf(11)] = 1
-    }
-    if (aceCount(hand) === 0 && handValue(hand) > 21) {
-      break
-    }
-  }
-  return hand
 }
