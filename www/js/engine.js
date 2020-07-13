@@ -102,11 +102,12 @@ function playGame () {
 
   // Variables for the player's turn
   const playerFinalHands = []
-  var splitAllowed = true
+  var splitAllowed
   var splitCount = 0
 
   // Simulate the player's turn, recursing when splitting
   function playerTurn (hand, isFirstHand) {
+    splitAllowed = !(splitCount >= rules.maxSplits)
     const result = playHand(hand, splitAllowed, isFirstHand, dealerStartingHand[0])
     if (result === undefined) {
       if (rules.earlySurrender || !(dealerStartingHandValue === 21)) {
@@ -120,7 +121,6 @@ function playGame () {
     } else if (result.split) {
       stats.splits++
       splitCount++
-      splitAllowed = !(splitCount >= rules.maxSplits)
       playerTurn([result[0], takeCard()], false)
       playerTurn([result[1], takeCard()], false)
     } else {
