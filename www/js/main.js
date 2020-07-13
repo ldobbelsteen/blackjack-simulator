@@ -130,11 +130,11 @@ function updateCell (cell) {
 // Update the results box with statistics
 function updateResults (stats) {
   const result = document.getElementById('results').getElementsByTagName('span')
-  const time = (new Date() - stats.startTime) / 1000
-  const speed = Math.round(((stats.games / 1000000) / time) * 10) / 10
-  const houseEdge = -100 * (stats.balance / stats.games)
+  const totalTime = (Date.now() - stats.startTime) / 1000
+  const speed = stats.games / totalTime / 1000000
+  const houseEdge = -100 * stats.balance / stats.games
   result[0].textContent = stats.games.toLocaleString()
-  result[1].textContent = time.toLocaleString() + ' seconds'
+  result[1].textContent = totalTime.toLocaleString() + ' seconds'
   result[2].textContent = speed.toLocaleString() + ' million'
   result[3].textContent = stats.balance.toLocaleString()
   result[4].textContent = isNaN(houseEdge) ? '0 %' : houseEdge.toLocaleString() + ' %'
@@ -147,6 +147,7 @@ function updateResults (stats) {
   result[11].textContent = stats.blackjacks.toLocaleString()
   result[12].textContent = stats.surrenders.toLocaleString()
   result[13].textContent = stats.splits.toLocaleString()
+  result[14].textContent = stats.tripleSevenBonuses.toLocaleString()
 }
 
 // Read the rules and strategy from the DOM
