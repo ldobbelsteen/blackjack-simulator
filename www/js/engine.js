@@ -38,25 +38,19 @@ this.onmessage = (msg) => {
     const deckThreshold = Math.round(52 * rules.deckCount * (100 - rules.deckPenetration) / 100)
     for (let i = 0; i < count; i++) {
       if (deck.index < deckThreshold || rules.shuffleEachGame) {
-        shuffleDeck()
+        this.self.crypto.getRandomValues(random)
+        for (let i = deck.length - 1; i > 0; i--) {
+          const j = Math.floor((random[i] / (0xffffffff + 1)) * (i + 1));
+          [deck[i], deck[j]] = [deck[j], deck[i]]
+        }
+        deck.index = deck.length - 1
       }
       playGame()
-      stats.games++
     }
   }
 
   // Send back statistics when instruction is finished
   this.postMessage(stats)
-}
-
-// Shuffle the global deck using the Fisher-Yates algorithm and Crypto web API
-function shuffleDeck () {
-  this.self.crypto.getRandomValues(random)
-  for (let i = deck.length - 1; i > 0; i--) {
-    const j = Math.floor((random[i] / (0xffffffff + 1)) * (i + 1));
-    [deck[i], deck[j]] = [deck[j], deck[i]]
-  }
-  deck.index = deck.length - 1
 }
 
 // Take a card from the deck
@@ -261,4 +255,5 @@ function playGame () {
       }
     }
   }
+  stats.games++
 }
