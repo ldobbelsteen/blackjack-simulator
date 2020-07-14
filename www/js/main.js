@@ -4,7 +4,7 @@ window.onload = () => {
   const threads = navigator.hardwareConcurrency
   const threadSetting = document.getElementById('thread-count')
   threadSetting.max = threads
-  threadSetting.value = Math.floor(threads / 2)
+  threadSetting.value = Math.round(threads / 2)
 
   // Initialize settings button
   const settingsButton = document.getElementById('settings').getElementsByTagName('button')[0]
