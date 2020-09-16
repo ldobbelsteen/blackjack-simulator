@@ -4,6 +4,7 @@ var stats // To keep track of statistics of a single instruction
 var random // To hold an array of random values required for shuffling
 
 this.onmessage = (msg) => {
+  
   // Reset statistics
   stats = {
     games: 0,

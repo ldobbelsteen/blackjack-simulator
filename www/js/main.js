@@ -1,5 +1,5 @@
-// When the page has finished loading
 window.onload = () => {
+
   // Set thread setting to conform to the available resources
   const threads = navigator.hardwareConcurrency
   const threadSetting = document.getElementById('thread-count')
