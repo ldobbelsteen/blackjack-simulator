@@ -1,3 +1,3 @@
-FROM nginx:alpine
-COPY www /usr/share/nginx/html
+FROM caddy
+COPY www /usr/share/caddy
 EXPOSE 80
