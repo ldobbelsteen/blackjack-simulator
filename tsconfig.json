@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": false,
+    "downlevelIteration": true,
     "esModuleInterop": true,
     "jsx": "react",
     "lib": [
