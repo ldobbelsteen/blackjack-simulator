@@ -1,0 +1,95 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700");
+
+$primary-color: #1a1a1a;
+$secondary-color: #2a2a2a;
+$tertiary-color: #3a3a3a;
+$text-color: #e5e5e5;
+
+html {
+  font-family: "Montserrat", sans-serif;
+  background-color: $primary-color;
+  color: $text-color;
+}
+
+body {
+  margin: 1rem;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+
+    img {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    h1 {
+      margin: 0;
+      padding-left: 0.5rem;
+    }
+  }
+}
+
+.rulesSection {
+  border: 0.2rem solid $secondary-color;
+  font-size: 0.8rem;
+  padding: 0.8em;
+}
+
+.strategySection {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  .strategyTable {
+    margin: 0.4rem;
+    padding: 0.4rem;
+    text-align: center;
+    background-color: $secondary-color;
+
+    h3 {
+      background-color: inherit;
+    }
+
+    table {
+      input {
+        width: 1.8rem;
+        height: 1.8rem;
+        text-align: inherit;
+      }
+    }
+  }
+}
+
+.statsSection {
+  border: 0.2rem solid $secondary-color;
+  padding: 0.5rem;
+
+  button {
+    background-color: $secondary-color;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    width: 100%;
+    padding: 1rem;
+    font-weight: 700;
+    transition-duration: 0.3s;
+    margin-bottom: 0.5rem;
+
+    &:hover {
+      background-color: $tertiary-color;
+    }
+  }
+
+  p {
+    margin: 0.5rem;
+  }
+}

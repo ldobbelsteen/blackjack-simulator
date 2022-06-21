@@ -1,0 +1,84 @@
+{
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "check": "tsc --noEmit && eslint . --ignore-path .gitignore --max-warnings 0",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@types/react": "^18.0.14",
+    "@types/react-dom": "^18.0.5",
+    "@typescript-eslint/eslint-plugin": "^5.29.0",
+    "@typescript-eslint/parser": "^5.29.0",
+    "colord": "^2.9.2",
+    "eslint": "^8.18.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-react": "^7.30.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^2.7.1",
+    "prettier-plugin-jsdoc": "^0.3.38",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "sass": "^1.52.3",
+    "typescript": "^4.7.4",
+    "vite": "^2.9.12",
+    "vitest": "^0.15.2"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:import/recommended",
+      "plugin:import/typescript",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:@typescript-eslint/recommended-requiring-type-checking",
+      "plugin:react/recommended",
+      "plugin:react-hooks/recommended",
+      "plugin:jsx-a11y/recommended",
+      "plugin:promise/recommended",
+      "plugin:prettier/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaFeatures": {
+        "jsx": true
+      },
+      "project": [
+        "./tsconfig.json"
+      ],
+      "sourceType": "module"
+    },
+    "rules": {
+      "import/order": [
+        "warn",
+        {
+          "alphabetize": {
+            "order": "asc"
+          }
+        }
+      ],
+      "line-comment-position": [
+        "warn",
+        {
+          "position": "beside"
+        }
+      ]
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    }
+  },
+  "prettier": {
+    "plugins": [
+      "prettier-plugin-jsdoc"
+    ]
+  }
+}
