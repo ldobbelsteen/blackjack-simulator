@@ -184,7 +184,7 @@ function getRules () {
   rules.allowDouble = document.querySelector('input[name="allow-double"]:checked').value !== 'never'
   rules.doubleRestricted = document.querySelector('input[name="allow-double"]:checked').value === 'restricted'
   rules.allowSplitting = document.querySelector('input[name="allow-splitting"]:checked').value !== 'never'
-  rules.maxSplits = document.querySelector('input[name="allow-splitting"]:checked').value === 'restricted' ? parseInt(document.getElementById('max-splits').value) : 0
+  rules.maxSplits = document.querySelector('input[name="allow-splitting"]:checked').value === 'restricted' ? parseInt(document.getElementById('max-splits').value) : Infinity
   rules.allowHittingSplitAces = document.querySelector('input[name="allow-hitting-split-aces"]:checked').value === 'true'
   rules.allowResplittingAces = document.querySelector('input[name="allow-resplitting-aces"]:checked').value === 'true'
   rules.allowDoubleAfterSplit = document.querySelector('input[name="allow-double-after-split"]:checked').value === 'true'
