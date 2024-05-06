@@ -133,7 +133,7 @@ function playGame () {
             stats.lossesNormal++
             stats.balance -= 1
           }
-          return
+          return 0
         } else {
           move = move.charAt(1).toUpperCase()
         }
