@@ -1,12 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { Card, Deck } from "./deck";
 
-// @ts-expect-error vitest runs in node which doesn't have crypto by default
-import crypto from "node:crypto";
-
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-globalThis.crypto = crypto;
-
 describe("deck", () => {
   it("occurrences", () => {
     const deckCount = 4;
