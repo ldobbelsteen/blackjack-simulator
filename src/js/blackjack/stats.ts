@@ -1,5 +1,4 @@
 export class Stats {
-  games: number;
   wins: number;
   pushes: number;
   losses: number;
@@ -11,7 +10,6 @@ export class Stats {
   splits: number;
 
   constructor(
-    games: number,
     wins: number,
     pushes: number,
     losses: number,
@@ -22,7 +20,6 @@ export class Stats {
     surrenders: number,
     splits: number,
   ) {
-    this.games = games;
     this.wins = wins;
     this.pushes = pushes;
     this.losses = losses;
@@ -35,11 +32,10 @@ export class Stats {
   }
 
   static empty(): Stats {
-    return new Stats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    return new Stats(0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 
   add(other: Stats) {
-    this.games += other.games;
     this.wins += other.wins;
     this.pushes += other.pushes;
     this.losses += other.losses;
@@ -49,6 +45,20 @@ export class Stats {
     this.lossesAfterDoubling += other.lossesAfterDoubling;
     this.surrenders += other.surrenders;
     this.splits += other.splits;
+  }
+
+  gameCount(): number {
+    return (
+      this.wins +
+      this.pushes +
+      this.losses +
+      this.blackjacks +
+      this.winsAfterDoubling +
+      this.pushesAfterDoubling +
+      this.lossesAfterDoubling +
+      this.surrenders -
+      this.splits
+    );
   }
 
   balance(blackjackPayout: number): number {
@@ -62,9 +72,16 @@ export class Stats {
     );
   }
 
+  houseEdge(blackjackPayout: number): number {
+    return (-100 * this.balance(blackjackPayout)) / this.gameCount() || 0;
+  }
+
+  gamesPerSecond(simulationTimeMs: number): number {
+    return this.gameCount() / (simulationTimeMs / 1_000) || 0;
+  }
+
   toObject() {
     return {
-      games: this.games,
       wins: this.wins,
       pushes: this.pushes,
       losses: this.losses,
@@ -79,7 +96,6 @@ export class Stats {
 
   static fromObject(obj: ReturnType<Stats["toObject"]>): Stats {
     return new Stats(
-      obj.games,
       obj.wins,
       obj.pushes,
       obj.losses,

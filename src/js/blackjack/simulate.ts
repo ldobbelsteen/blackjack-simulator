@@ -193,8 +193,6 @@ export class Simulation {
           }
         }
       });
-
-      stats.games += 1;
     }
 
     return stats;

@@ -58,10 +58,7 @@ export function Results(props: { rules: Rules; strategy: EditableStrategy }) {
     workers.current = [];
   };
 
-  const simulationTime = (lastStop ?? new Date()).getTime() - lastStart.getTime();
-  const balance = stats.balance(props.rules.blackjackPayout);
-  const houseEdge = (-100 * balance) / stats.games || 0;
-  const gamesPerSecond = stats.games / (simulationTime / 1_000) || 0;
+  const simulationTimeMs = (lastStop ?? new Date()).getTime() - lastStart.getTime();
 
   return (
     <>
@@ -78,15 +75,15 @@ export function Results(props: { rules: Rules; strategy: EditableStrategy }) {
         <button onClick={() => (lastStop === null ? stopSimulation() : startSimulation())}>
           {lastStop === null
             ? "Stop simulation"
-            : stats.games === 0
+            : stats.gameCount() === 0
               ? "Start simulation"
               : "Restart simulation"}
         </button>
-        <p>{`Simulation time: ${timeDiffString(simulationTime)}`}</p>
-        <p>{`House edge: ${houseEdge.toLocaleString()}%`}</p>
-        <p>{`Average games per second: ${Math.round(gamesPerSecond).toLocaleString()}`}</p>
-        <p>{`Games played: ${stats.games.toLocaleString()}`}</p>
-        <p>{`Balance: ${balance.toLocaleString()}`}</p>
+        <p>{`Simulation time: ${timeDiffString(simulationTimeMs)}`}</p>
+        <p>{`House edge: ${stats.houseEdge(props.rules.blackjackPayout).toLocaleString()}%`}</p>
+        <p>{`Average games per second: ${Math.round(stats.gamesPerSecond(simulationTimeMs)).toLocaleString()}`}</p>
+        <p>{`Games played: ${stats.gameCount().toLocaleString()}`}</p>
+        <p>{`Balance: ${stats.balance(props.rules.blackjackPayout).toLocaleString()}`}</p>
         <p>{`Normal wins: ${stats.wins.toLocaleString()}`}</p>
         <p>{`Normal pushes: ${stats.pushes.toLocaleString()}`}</p>
         <p>{`Normal losses: ${stats.losses.toLocaleString()}`}</p>
