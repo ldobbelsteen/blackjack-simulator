@@ -17,7 +17,7 @@ export class Shuffler {
 
   /** Fill the entropy array with new randomness */
   private fetchEntropy(): void {
-    window.crypto.getRandomValues(this.entropy);
+    crypto.getRandomValues(this.entropy);
     this.index = 0;
   }
 
