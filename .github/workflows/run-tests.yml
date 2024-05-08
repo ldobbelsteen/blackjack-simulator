@@ -14,8 +14,8 @@ jobs:
         id: node-setup
         uses: actions/setup-node@v4
         with:
-          node-version: lts
-      
+          node-version: lts/*
+
       - name: Install dependencies
         id: install-dependencies
         run: npm ci
@@ -23,7 +23,7 @@ jobs:
       - name: Run tests
         id: run-tests
         run: npm run test
-      
+
       - name: Run checks
         id: run-checks
         run: npm run check
