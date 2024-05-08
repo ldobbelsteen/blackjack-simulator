@@ -59,7 +59,7 @@ export class Simulation {
                 h.isUntouched &&
                 (this.rules.allowDoubleAfterSplit || splitCount === 0) &&
                 (this.rules.allowDouble === AllowDouble.Always ||
-                  (this.rules.allowDouble === AllowDouble.Restricted &&
+                  (this.rules.allowDouble === AllowDouble.NineTenOrEleven &&
                     (h.value === 9 || h.value === 10 || h.value === 11)))
               );
             case Action.Surrender:

@@ -4,7 +4,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "check": "eslint . --max-warnings 0"
+    "check": "eslint . --max-warnings 0 && tsc --noEmit"
   },
   "dependencies": {
     "@types/react": "^18.2.38",
@@ -38,8 +38,8 @@
       "plugin:prettier/recommended"
     ],
     "ignorePatterns": [
-      "/dist/",
-      "/node_modules/"
+      "dist/",
+      "node_modules/"
     ],
     "parserOptions": {
       "project": "./tsconfig.json"

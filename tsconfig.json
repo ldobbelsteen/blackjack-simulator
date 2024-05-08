@@ -11,10 +11,11 @@
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "skipLibCheck": true,
     "strict": true,
     "target": "esnext",
     "types": [
       "vite/client"
-    ]
-  }
+    ],
+  },
 }
