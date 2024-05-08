@@ -1,11 +1,10 @@
-html, body {
-    font-family: 'Montserrat', sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap');
+
+html {
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.9rem;
     background-color: #1a1a1a;
     color: #e5e5e5;
-    margin: 0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
 }
 
 a {
@@ -24,8 +23,8 @@ button {
     outline: none;
     border: none;
     width: 100%;
-    padding: 1em;
-    font-weight: 700;
+    padding: 1rem;
+    font-weight: bold;
     transition-duration: 0.3s;
 }
 
@@ -34,8 +33,7 @@ button:hover {
 }
 
 header {
-    padding: 2em;
-    padding-bottom: 0;
+    margin: 1rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -43,31 +41,30 @@ header {
 
 header h1 {
     margin: 0;
-    padding-left: 0.5em;
+    margin-left: 0.5rem;
 }
 
 header img {
-    width: 2em;
-    height: 2em;
+    width: 2rem;
+    height: 2rem;
 }
 
 main {
     flex: 1 0 auto;
-    padding: 1em;
     max-width: 840px;
     margin: 0 auto;
     overflow: hidden;
 }
 
 #settings {
-    border: 0.25em solid #2a2a2a;
-    padding: 0.8em;
-    font-size: 0.8em;
+    border: 0.25rem solid #2a2a2a;
+    padding: 0.8rem;
+    font-size: 0.8rem;
 }
 
 #settings h3 {
     margin: 0;
-    margin-bottom: 0.5em;
+    margin-bottom: 0.5rem;
 }
 
 #settings table {
@@ -75,14 +72,13 @@ main {
 }
 
 #settings div {
-    display: none;
     background-color: #2a2a2a;
-    padding: 0.1em 1em;
-    margin-top: 0.5em;
+    padding: 0.1rem 1rem;
+    margin-top: 0.5rem;
 }
 
 #settings button {
-    margin-top: 0.5em;
+    margin-top: 0.5rem;
 }
 
 #strategy {
@@ -91,32 +87,28 @@ main {
     justify-content: center;
 }
 
-#strategy div div {
+#strategy div {
     text-align: center;
     background-color: #2a2a2a;
-    margin: 0.4em;
-    padding: 0.4em;
+    margin: 0.4rem;
+    padding: 0.4rem;
 }
 
-#strategy div div:nth-child(2) {
-    margin-top: 1em;
+#strategy h3 {
+    margin: 0;
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
 }
 
 #strategy input {
     vertical-align: middle;
     text-align: center;
-    width: 1.8em;
-    height: 1.8em;
+    width: 1.8rem;
+    height: 1.8rem;
     color: inherit;
     border-width: 0px;
     color: #1a1a1a;
-    font-size: 1em;
-}
-
-#strategy h3 {
-    margin: 0;
-    margin-bottom: 0.5em;
-    margin-top: 0.5em;
+    font-size: 1rem;
 }
 
 #strategy table {
@@ -124,6 +116,6 @@ main {
 }
 
 #results {
-    border: 0.25em solid #2a2a2a;
-    padding: 1em;
+    border: 0.25rem solid #2a2a2a;
+    padding: 1rem;
 }
