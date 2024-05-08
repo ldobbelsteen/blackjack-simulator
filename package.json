@@ -3,7 +3,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "check": "eslint . --max-warnings 0"
   },
   "dependencies": {
     "@types/react": "^18.2.38",
@@ -34,6 +35,10 @@
       "plugin:react/recommended",
       "plugin:react-hooks/recommended",
       "plugin:prettier/recommended"
+    ],
+    "ignorePatterns": [
+      "/dist/",
+      "/node_modules/"
     ],
     "parserOptions": {
       "project": "./tsconfig.json"

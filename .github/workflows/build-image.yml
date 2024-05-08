@@ -1,4 +1,4 @@
-name: Container
+name: Build image
 on: push
 
 jobs:
