@@ -105,7 +105,7 @@ export class Move {
   color(): string {
     if (this.primary === null) {
       if (this.secondary === null) {
-        return "#4a4a4a";
+        return "#f7a1a1";
       } else {
         return actionToColor(this.secondary);
       }

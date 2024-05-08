@@ -14,11 +14,12 @@ export function Strategy(props: {
         upcard and the side row is the player&apos;s total hand value. Hard is the strategy for when
         you have a normal hand, soft is for when you have at least one ace which is compressible to
         1 and pair is for when you have a pair of cards. It can be edited at will, given you use the
-        standard letter combinations. The first letter gives the preferred move and the second gives
-        the move if the first one is not allowed in a particular situation. If neither are possible
-        in the pair strategy (or the cell is empty), the simulator falls back to the hard strategy.
-        H = hit, S = stand, D = double-down, P = split, R = surrender. The default strategy filled
-        in here is the standard basic strategy.
+        standard letter combinations. Invalid cells are highlighted dark red. The first letter gives
+        the preferred move and the second gives the move if the first one is not allowed in a
+        particular situation. If neither are possible in the pair strategy (or the cell is empty,
+        marked with an x), the simulator falls back to the hard strategy. H = hit, S = stand, D =
+        double-down, P = split, R = surrender. The default strategy filled in here is the standard
+        basic strategy.
       </p>
       <div id="strategy">
         <StrategyTable
@@ -64,6 +65,7 @@ function StrategyTable(props: {
                 <td key={j}>
                   <input
                     value={props.strategy.input(i, j, props.type)}
+                    placeholder={props.strategy.input(i, j, props.type) === "" ? "x" : undefined}
                     onChange={(e) =>
                       props.setStrategy(
                         props.strategy.withSet(i, j, props.type, e.target.value.toUpperCase()),
