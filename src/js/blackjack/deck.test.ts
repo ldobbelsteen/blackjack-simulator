@@ -4,8 +4,8 @@ import { Card, Deck } from "./deck";
 describe("deck", () => {
   it("occurrences", () => {
     const deckCount = 4;
-    const deckPenetration = 1.0;
-    const deck = new Deck(deckCount, deckPenetration);
+    const shuffleThreshold = 100;
+    const deck = new Deck(deckCount, shuffleThreshold);
     for (let i = 0; i < 100; i++) {
       const occurrences = new Map<Card, number>();
       for (let j = 0; j < deckCount * 52; j++) {
