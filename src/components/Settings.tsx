@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AllowDouble, AllowSurrender, Rules } from "../js/blackjack/rules";
+import { AllowDouble, AllowSurrender, Rules } from "../engine/rules";
 import { RadioRow } from "./RadioRow";
 
 export function Settings(props: { rules: Rules; setRules: (rules: Rules) => void }) {

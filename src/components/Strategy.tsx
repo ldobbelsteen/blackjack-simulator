@@ -1,6 +1,6 @@
 import React from "react";
-import { EditableStrategy } from "../js/blackjack/strategy";
-import { HandType } from "../js/blackjack/hand";
+import { EditableStrategy } from "../engine/strategy";
+import { HandType } from "../engine/hand";
 
 export function Strategy(props: {
   strategy: EditableStrategy;

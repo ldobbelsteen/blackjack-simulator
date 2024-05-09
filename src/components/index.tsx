@@ -3,8 +3,8 @@ import logoLightUrl from "../assets/logo-light.svg";
 import { Settings } from "./Settings";
 import { Strategy } from "./Strategy";
 import { Results } from "./Results";
-import { EditableStrategy } from "../js/blackjack/strategy";
-import { Rules } from "../js/blackjack/rules";
+import { EditableStrategy } from "../engine/strategy";
+import { Rules } from "../engine/rules";
 import { Toaster } from "react-hot-toast";
 
 export function Index() {

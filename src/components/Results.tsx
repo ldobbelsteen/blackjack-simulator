@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Rules } from "../js/blackjack/rules";
-import { CompleteStrategy, EditableStrategy } from "../js/blackjack/strategy";
-import { Stats } from "../js/blackjack/stats";
-import { BlackjackWorker } from "../js/blackjack/worker";
-import { timeDiffString } from "../js/misc";
+import { Rules } from "../engine/rules";
+import { CompleteStrategy, EditableStrategy } from "../engine/strategy";
+import { Stats } from "../engine/stats";
+import { BlackjackWorker } from "../engine/worker";
+import { timeDiffString } from "../misc";
 import toast from "react-hot-toast";
 
 const REFRESH_INTERVAL = 1000;
@@ -39,7 +39,7 @@ export function Results(props: { rules: Rules; strategy: EditableStrategy }) {
     setLastStop(null);
 
     for (let i = 0; i < props.rules.threadCount; i += 1) {
-      const worker = new Worker(new URL("../js/blackjack/worker", import.meta.url), {
+      const worker = new Worker(new URL("../engine/worker", import.meta.url), {
         type: "module",
       }) as BlackjackWorker;
       worker.onmessage = (ev) => liveStats.current.add(Stats.fromObject(ev.data.stats));
