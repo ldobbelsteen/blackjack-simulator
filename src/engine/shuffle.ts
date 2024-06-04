@@ -1,31 +1,46 @@
-/**
- * Heavily optimized array shuffling. Uses the Crypto API, specifically the
- * getRandomValues function. This is a cryptographically secure entropy source,
- * which should be sufficiently random in any use case.
- */
+export type EntropySource = "crypto" | "math" | "deterministic";
+
+/** Heavily optimized array shuffler. */
 export class Shuffler {
   private index: number;
   private length: number;
   private entropy: Uint16Array;
+  private entropySource: (arr: Uint16Array) => void;
 
-  constructor() {
+  constructor(entropySource: EntropySource) {
     this.index = 0;
     this.length = 65536 / Uint16Array.BYTES_PER_ELEMENT;
     this.entropy = new Uint16Array(this.length);
+
+    switch (entropySource) {
+      case "crypto":
+        this.entropySource = cryptoEntropySource;
+        break;
+      case "math":
+        this.entropySource = mathEntropySource;
+        break;
+      case "deterministic":
+        this.entropySource = deterministicEntropySource;
+        break;
+    }
+
     this.fetchEntropy();
   }
 
-  /** Fill the entropy array with new randomness */
+  /** Fill the entropy array with new randomness. */
   private fetchEntropy(): void {
-    crypto.getRandomValues(this.entropy);
+    this.entropySource(this.entropy);
     this.index = 0;
   }
 
-  /** Get a random Uint16 (two bytes) from the entropy */
+  /** Get a random Uint16 (two bytes) from the entropy. */
   private twoRandomBytes(): number {
-    const byte = this.entropy[(this.index += 1)];
-    if (this.index === this.length) this.fetchEntropy();
-    return byte;
+    const bytes = this.entropy[this.index];
+    this.index += 1;
+    if (this.index === this.length) {
+      this.fetchEntropy();
+    }
+    return bytes;
   }
 
   /**
@@ -41,12 +56,35 @@ export class Shuffler {
     let mask = 0;
     const length = arr.length;
     for (let index = length; index > 0; index >>= 1) mask = (mask << 1) | 1;
-    for (let index = length - 1, random; index > 0; index--) {
+    for (let index = length - 1, random; index > 0; index -= 1) {
       if ((index & (index + 1)) === 0) mask >>= 1;
       do {
         random = this.twoRandomBytes() & mask;
       } while (random > index);
       [arr[index], arr[random]] = [arr[random], arr[index]];
     }
+  }
+}
+
+/**
+ * Entropy source using the Crypto API, specifically the getRandomValues function.
+ * This is a cryptographically secure entropy source, which should be sufficiently
+ * random for any use case.
+ */
+function cryptoEntropySource(arr: Uint16Array) {
+  crypto.getRandomValues(arr);
+}
+
+/** Entropy source using the Math API. */
+function mathEntropySource(arr: Uint16Array) {
+  for (let i = 0; i < arr.length; i += 1) {
+    arr[i] = Math.floor(Math.random() * 65536);
+  }
+}
+
+/** Deterministic entropy source for testing purposes. */
+function deterministicEntropySource(arr: Uint16Array) {
+  for (let i = 0; i < arr.length; i += 1) {
+    arr[i] = i;
   }
 }

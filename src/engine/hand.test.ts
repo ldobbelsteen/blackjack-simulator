@@ -50,4 +50,13 @@ describe("hand", () => {
     expect(hand.isDoubled).toBe(false);
     expect(hand.type()).toBe(HandType.Soft);
   });
+
+  it("toString", () => {
+    const hand = new Hand(10, 4);
+    expect(hand.toString()).toBe("14, type: Hard, doubled: false, first card: 10");
+
+    hand.add(3);
+    hand.add(8);
+    expect(hand.toString()).toBe("25, type: Hard, doubled: false, first card: 10");
+  });
 });

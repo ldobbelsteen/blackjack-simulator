@@ -7,6 +7,7 @@ export default defineConfig({
     coverage: {
       provider: "istanbul",
       include: ["src/engine/"],
+      exclude: ["src/engine/worker.ts"],
     },
   },
 });

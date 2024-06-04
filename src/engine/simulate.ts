@@ -1,7 +1,8 @@
-import { Deck } from "./deck";
+import { Card, Deck } from "./deck";
 import { Hand, HandType } from "./hand";
 import { Action } from "./move";
 import { type Rules, AllowDouble, AllowSurrender } from "./rules";
+import { EntropySource } from "./shuffle";
 import { Stats } from "./stats";
 import { type CompleteStrategy } from "./strategy";
 
@@ -10,10 +11,10 @@ export class Simulation {
   private strategy: CompleteStrategy;
   private deck: Deck;
 
-  constructor(rules: Rules, strategy: CompleteStrategy) {
+  constructor(rules: Rules, strategy: CompleteStrategy, entropySource: EntropySource) {
     this.rules = rules;
     this.strategy = strategy;
-    this.deck = new Deck(rules.deckCount, rules.maxDeckPenetration);
+    this.deck = new Deck(rules.deckCount, rules.maxDeckPenetration, entropySource);
   }
 
   run(count: number): Stats {
@@ -45,72 +46,12 @@ export class Simulation {
 
       /** Function for the player's turn that recurses when splitting. */
       const playerTurn = (h: Hand) => {
-        /** Check whether an action is currently available given the circumstances. */
-        const actionIsAvailable = (a: Action): boolean => {
-          switch (a) {
-            case Action.Hit:
-              return true;
-            case Action.Stand:
-              return true;
-            case Action.Split:
-              return splitCount < this.rules.maxSplits;
-            case Action.Double:
-              return (
-                h.isUntouched &&
-                (this.rules.allowDoubleAfterSplit || splitCount === 0) &&
-                (this.rules.allowDouble === AllowDouble.Always ||
-                  (this.rules.allowDouble === AllowDouble.NineTenOrEleven &&
-                    (h.value === 9 || h.value === 10 || h.value === 11)))
-              );
-            case Action.Surrender:
-              return (
-                this.rules.allowSurrender !== AllowSurrender.Never &&
-                h.isUntouched &&
-                splitCount === 0
-              );
-          }
-        };
-
-        /** Get the action a player takes based on the circumstances and its strategy. */
-        const determineAction = (type: HandType): Action => {
-          switch (type) {
-            case HandType.Pair: {
-              const pm = this.strategy.pairMove(h.value, dealerHand.firstCard);
-              if (pm.primary !== null && actionIsAvailable(pm.primary)) {
-                return pm.primary;
-              } else if (pm.secondary !== null && actionIsAvailable(pm.secondary)) {
-                return pm.secondary;
-              } else {
-                return determineAction(HandType.Hard);
-              }
-            }
-            case HandType.Soft: {
-              const sm = this.strategy.softMove(h.value, dealerHand.firstCard);
-              if (sm.primary !== null && actionIsAvailable(sm.primary)) {
-                return sm.primary;
-              } else if (sm.secondary !== null && actionIsAvailable(sm.secondary)) {
-                return sm.secondary;
-              } else {
-                throw new Error(`no valid move for hand: ${h.toString()}`);
-              }
-            }
-            case HandType.Hard: {
-              const hm = this.strategy.hardMove(h.value, dealerHand.firstCard);
-              if (hm.primary !== null && actionIsAvailable(hm.primary)) {
-                return hm.primary;
-              } else if (hm.secondary !== null && actionIsAvailable(hm.secondary)) {
-                return hm.secondary;
-              } else {
-                throw new Error(`no valid move for hand: ${h.toString()}`);
-              }
-            }
-          }
-        };
-
         /** Loop until the player busts (the while guard) or otherwise breaks the loop. */
         while (h.value < 21) {
           /** Determine the action to execute and execute it. */
-          switch (determineAction(h.type())) {
+          switch (
+            this.determineAction(h.type(), h.value, h.isUntouched, dealerHand.firstCard, splitCount)
+          ) {
             case Action.Hit:
               h.add(this.deck.takeCard());
               break;
@@ -196,5 +137,100 @@ export class Simulation {
     }
 
     return stats;
+  }
+
+  /** Check whether an action is currently available given the circumstances. */
+  private actionIsAvailable(
+    action: Action,
+    handValue: number,
+    handIsUntouched: boolean,
+    splitCount: number,
+  ): boolean {
+    switch (action) {
+      case Action.Hit:
+        return true;
+      case Action.Stand:
+        return true;
+      case Action.Split:
+        return splitCount < this.rules.maxSplits;
+      case Action.Double:
+        return (
+          handIsUntouched &&
+          (this.rules.allowDoubleAfterSplit || splitCount === 0) &&
+          (this.rules.allowDouble === AllowDouble.Always ||
+            (this.rules.allowDouble === AllowDouble.NineTenOrEleven &&
+              (handValue === 9 || handValue === 10 || handValue === 11)))
+        );
+      case Action.Surrender:
+        return (
+          this.rules.allowSurrender !== AllowSurrender.Never && handIsUntouched && splitCount === 0
+        );
+    }
+  }
+
+  /** Get the action a player takes based on the circumstances and its strategy. */
+  private determineAction(
+    handType: HandType,
+    handValue: number,
+    handIsUntouched: boolean,
+    dealerUpcard: Card,
+    splitCount: number,
+  ): Action {
+    switch (handType) {
+      case HandType.Pair: {
+        const pairMove = this.strategy.pairMove(handValue, dealerUpcard);
+        if (
+          pairMove.primary !== null &&
+          this.actionIsAvailable(pairMove.primary, handValue, handIsUntouched, splitCount)
+        ) {
+          return pairMove.primary;
+        } else if (
+          pairMove.secondary !== null &&
+          this.actionIsAvailable(pairMove.secondary, handValue, handIsUntouched, splitCount)
+        ) {
+          return pairMove.secondary;
+        } else {
+          return this.determineAction(
+            HandType.Hard,
+            handValue,
+            handIsUntouched,
+            dealerUpcard,
+            splitCount,
+          );
+        }
+      }
+      case HandType.Soft: {
+        const softMove = this.strategy.softMove(handValue, dealerUpcard);
+        if (
+          softMove.primary !== null &&
+          this.actionIsAvailable(softMove.primary, handValue, handIsUntouched, splitCount)
+        ) {
+          return softMove.primary;
+        } else if (
+          softMove.secondary !== null &&
+          this.actionIsAvailable(softMove.secondary, handValue, handIsUntouched, splitCount)
+        ) {
+          return softMove.secondary;
+        } else {
+          throw new Error(`invalid move: ${softMove.toString()}`);
+        }
+      }
+      case HandType.Hard: {
+        const hardMove = this.strategy.hardMove(handValue, dealerUpcard);
+        if (
+          hardMove.primary !== null &&
+          this.actionIsAvailable(hardMove.primary, handValue, handIsUntouched, splitCount)
+        ) {
+          return hardMove.primary;
+        } else if (
+          hardMove.secondary !== null &&
+          this.actionIsAvailable(hardMove.secondary, handValue, handIsUntouched, splitCount)
+        ) {
+          return hardMove.secondary;
+        } else {
+          throw new Error(`invalid move: ${hardMove.toString()}`);
+        }
+      }
+    }
   }
 }

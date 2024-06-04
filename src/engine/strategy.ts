@@ -144,19 +144,29 @@ export class EditableStrategy extends Strategy<string> {
   }
 
   withSet(i: number, j: number, type: HandType, value: string): EditableStrategy {
-    const copy = this.copy();
+    let hard = this.hard;
+    let soft = this.soft;
+    let pair = this.pair;
+
     switch (type) {
       case HandType.Hard:
-        copy.hard[i][j] = value;
+        hard = [...this.hard];
+        hard[i] = [...this.hard[i]];
+        hard[i][j] = value;
         break;
       case HandType.Soft:
-        copy.soft[i][j] = value;
+        soft = [...this.soft];
+        soft[i] = [...this.soft[i]];
+        soft[i][j] = value;
         break;
       case HandType.Pair:
-        copy.pair[i][j] = value;
+        pair = [...this.pair];
+        pair[i] = [...this.pair[i]];
+        pair[i][j] = value;
         break;
     }
-    return copy;
+
+    return new EditableStrategy(hard, soft, pair);
   }
 
   toComplete(): CompleteStrategy {
@@ -167,11 +177,15 @@ export class EditableStrategy extends Strategy<string> {
     );
   }
 
-  private copy(): EditableStrategy {
-    return new EditableStrategy(
-      this.hard.map((row) => row.slice()),
-      this.soft.map((row) => row.slice()),
-      this.pair.map((row) => row.slice()),
-    );
+  toObject() {
+    return {
+      hard: this.hard,
+      soft: this.soft,
+      pair: this.pair,
+    };
+  }
+
+  static fromObject(obj: ReturnType<EditableStrategy["toObject"]>): EditableStrategy {
+    return new EditableStrategy(obj.hard, obj.soft, obj.pair);
   }
 }

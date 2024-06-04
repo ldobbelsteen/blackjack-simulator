@@ -34,9 +34,11 @@ export class Hand {
   add(card: Card): void {
     this.value += card;
     this.isUntouched = false;
-    if (card === 11) this.aceCount += 1;
+    if (card === 11) {
+      this.aceCount += 1;
+    }
     if (this.value > 21 && this.isSoft()) {
-      this.aceCount--;
+      this.aceCount -= 1;
       this.value -= 10;
     }
   }
@@ -56,6 +58,6 @@ export class Hand {
   }
 
   toString(): string {
-    return `${this.value}, type: ${this.type()}, doubled: ${this.isDoubled}, first card: ${this.firstCard}`;
+    return `${this.value}, type: ${HandType[this.type()]}, doubled: ${this.isDoubled}, first card: ${this.firstCard}`;
   }
 }

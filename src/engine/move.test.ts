@@ -59,4 +59,14 @@ describe("move", () => {
       expect(Move.fromString(move, HandType.Pair).toString()).toBe(move);
     }
   });
+
+  it("invalidMoves", () => {
+    expect(() => Move.fromString("X", HandType.Hard)).toThrow();
+    expect(() => Move.fromString("X", HandType.Soft)).toThrow();
+    expect(() => Move.fromString("X", HandType.Pair)).toThrow();
+
+    expect(() => Move.fromString("XXX", HandType.Hard)).toThrow();
+    expect(() => Move.fromString("XXX", HandType.Soft)).toThrow();
+    expect(() => Move.fromString("XXX", HandType.Pair)).toThrow();
+  });
 });

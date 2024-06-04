@@ -110,11 +110,7 @@ export class Move {
         return actionToColor(this.secondary);
       }
     } else {
-      if (this.secondary === null) {
-        return actionToColor(this.primary);
-      } else {
-        return mixColors(actionToColor(this.primary), actionToColor(this.secondary), 0.3);
-      }
+      return mixColors(actionToColor(this.primary), actionToColor(this.secondary as Action), 0.3);
     }
   }
 }
