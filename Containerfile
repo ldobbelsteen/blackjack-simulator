@@ -6,5 +6,5 @@ COPY . .
 RUN npm run build
 
 FROM docker.io/library/nginx:alpine
-COPY --from=builder . /usr/share/nginx/html
+COPY --from=builder /build/dist /usr/share/nginx/html
 EXPOSE 80
