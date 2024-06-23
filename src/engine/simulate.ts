@@ -68,33 +68,95 @@ export class Simulation {
     return stats;
   }
 
-  /** Check whether an action is currently available given the circumstances. */
-  private actionIsAvailable(
-    action: Action,
-    handValue: number,
-    handIsUntouched: boolean,
-    splitCount: number,
-  ): boolean {
-    switch (action) {
-      case Action.Hit:
-        return true;
-      case Action.Stand:
-        return true;
-      case Action.Split:
-        return splitCount < this.rules.maxSplits;
-      case Action.Double:
-        return (
-          handIsUntouched &&
-          (this.rules.allowDoubleAfterSplit || splitCount === 0) &&
-          (this.rules.allowDouble === AllowDouble.Always ||
-            (this.rules.allowDouble === AllowDouble.NineTenOrEleven &&
-              (handValue === 9 || handValue === 10 || handValue === 11)))
-        );
-      case Action.Surrender:
-        return (
-          this.rules.allowSurrender !== AllowSurrender.Never && handIsUntouched && splitCount === 0
-        );
+  /**
+   * Execute a player's turn on a hand given the dealer's hand. Returns the final
+   * hand (or multiple in case of splits).
+   */
+  private playerTurn(playerHand: Hand, dealerHand: Hand, stats: Stats): Hand[] | Hand | undefined {
+    let result: Hand[] | Hand | undefined = undefined;
+    this.playerTurnRec(playerHand, dealerHand, stats, 0, (finalHand: Hand) => {
+      if (result === undefined) {
+        result = finalHand;
+      } else if (result instanceof Hand) {
+        result = [result, finalHand];
+      } else {
+        result.push(finalHand);
+      }
+    });
+    return result;
+  }
+
+  /**
+   * Recursive function to execute a player's turn on a hand (see main function).
+   * Returns the number of (new) splits that occurred and outputs final hands
+   * to the output function.
+   */
+  private playerTurnRec(
+    playerHand: Hand,
+    dealerHand: Hand,
+    stats: Stats,
+    prevSplitCount: number,
+    outputHand: (h: Hand) => void,
+  ): number {
+    /** Loop until the player busts. */
+    while (playerHand.value < 21) {
+      /** Determine the action to execute and execute it. */
+      switch (
+        this.determineAction(
+          playerHand.type(),
+          playerHand.value,
+          playerHand.isUntouched,
+          dealerHand.firstCard,
+          prevSplitCount,
+        )
+      ) {
+        case Action.Hit:
+          playerHand.add(this.deck.takeCard());
+          continue;
+        case Action.Stand:
+          outputHand(playerHand);
+          return 0;
+        case Action.Split: {
+          stats.splits += 1;
+
+          const leftHand = new Hand(playerHand.firstCard, this.deck.takeCard());
+          const leftSplitCount = this.playerTurnRec(
+            leftHand,
+            dealerHand,
+            stats,
+            prevSplitCount + 1,
+            outputHand,
+          );
+
+          const rightHand = new Hand(playerHand.firstCard, this.deck.takeCard());
+          const rightSplitCount = this.playerTurnRec(
+            rightHand,
+            dealerHand,
+            stats,
+            prevSplitCount + 1 + leftSplitCount,
+            outputHand,
+          );
+
+          return leftSplitCount + rightSplitCount + 1;
+        }
+        case Action.Double:
+          playerHand.add(this.deck.takeCard());
+          playerHand.isDoubled = true;
+          outputHand(playerHand);
+          return 0;
+        case Action.Surrender:
+          if (this.rules.allowSurrender === AllowSurrender.Early || !dealerHand.isBlackjack()) {
+            stats.surrenders += 1;
+          } else {
+            stats.losses += 1;
+          }
+          return 0;
+      }
+      throw new Error("no action taken unexpectedly");
     }
+
+    outputHand(playerHand);
+    return 0;
   }
 
   /** Get the action a player takes based on the circumstances and its strategy. */
@@ -119,6 +181,7 @@ export class Simulation {
         ) {
           return pairMove.secondary;
         } else {
+          /** If neither is possible, regard this hand as just hard. */
           return this.determineAction(
             HandType.Hard,
             handValue,
@@ -163,92 +226,33 @@ export class Simulation {
     }
   }
 
-  /**
-   * Execute a player's turn on a hand given the dealer's hand. Returns the final
-   * hand (or multiple in case of splits). The stats are kept up-to-date in case
-   * of splits and surrenders.
-   */
-  private playerTurn(playerHand: Hand, dealerHand: Hand, stats: Stats): Hand[] | Hand | undefined {
-    let result: Hand[] | Hand | undefined = undefined;
-    this.playerTurnRec(playerHand, dealerHand, stats, 0, (h: Hand) => {
-      if (result === undefined) {
-        result = h;
-      } else if (result instanceof Hand) {
-        result = [result, h];
-      } else {
-        result.push(h);
-      }
-    });
-    return result;
-  }
-
-  /**
-   * Recursive function to execute a player's turn on a hand (see main function).
-   * Returns the number of (new) splits that occurred.
-   */
-  private playerTurnRec(
-    playerHand: Hand,
-    dealerHand: Hand,
-    stats: Stats,
-    prevSplitCount: number,
-    outputHand: (h: Hand) => void,
-  ): number {
-    /** Loop until the player busts (the while guard) or otherwise breaks the loop. */
-    while (playerHand.value < 21) {
-      /** Determine the action to execute and execute it. */
-      switch (
-        this.determineAction(
-          playerHand.type(),
-          playerHand.value,
-          playerHand.isUntouched,
-          dealerHand.firstCard,
-          prevSplitCount,
-        )
-      ) {
-        case Action.Hit:
-          playerHand.add(this.deck.takeCard());
-          break;
-        case Action.Stand:
-          outputHand(playerHand);
-          return 0;
-        case Action.Split: {
-          stats.splits += 1;
-          const splitCard = playerHand.firstCard;
-          const hand1 = new Hand(splitCard, this.deck.takeCard());
-          const splitCount1 = this.playerTurnRec(
-            hand1,
-            dealerHand,
-            stats,
-            prevSplitCount + 1,
-            outputHand,
-          );
-          const hand2 = new Hand(splitCard, this.deck.takeCard());
-          const splitCount2 = this.playerTurnRec(
-            hand2,
-            dealerHand,
-            stats,
-            prevSplitCount + 1 + splitCount1,
-            outputHand,
-          );
-          return splitCount1 + splitCount2 + 1;
-        }
-        case Action.Double:
-          playerHand.add(this.deck.takeCard());
-          playerHand.isDoubled = true;
-          outputHand(playerHand);
-          return 0;
-        case Action.Surrender:
-          if (this.rules.allowSurrender === AllowSurrender.Early || !dealerHand.isBlackjack()) {
-            stats.surrenders += 1;
-          } else {
-            stats.losses += 1;
-          }
-          return 0;
-      }
+  /** Check whether an action is currently available given the circumstances. */
+  private actionIsAvailable(
+    action: Action,
+    handValue: number,
+    handIsUntouched: boolean,
+    splitCount: number,
+  ): boolean {
+    switch (action) {
+      case Action.Hit:
+        return true;
+      case Action.Stand:
+        return true;
+      case Action.Split:
+        return splitCount < this.rules.maxSplits;
+      case Action.Double:
+        return (
+          handIsUntouched &&
+          (this.rules.allowDoubleAfterSplit || splitCount === 0) &&
+          (this.rules.allowDouble === AllowDouble.Always ||
+            (this.rules.allowDouble === AllowDouble.NineTenOrEleven &&
+              (handValue === 9 || handValue === 10 || handValue === 11)))
+        );
+      case Action.Surrender:
+        return (
+          this.rules.allowSurrender !== AllowSurrender.Never && handIsUntouched && splitCount === 0
+        );
     }
-
-    outputHand(playerHand);
-    return 0;
   }
 
   /**
