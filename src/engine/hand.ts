@@ -13,34 +13,41 @@ export enum HandType {
  * 'compressed' when it is soft and exceeds a value of 21.
  */
 export class Hand {
-  value: number;
-  private aceCount: number;
-  isUntouched: boolean;
-  private startedAsPair: boolean;
-  firstCard: Card;
-  isDoubled: boolean;
+  private value_: number;
+  private aceCount_: number;
+  private isUntouched_: boolean;
+  private startedAsPair_: boolean;
+  private firstCard_: Card;
+  private isDoubledDown_: boolean;
 
   constructor(card1: Card, card2: Card) {
-    this.value = 0;
-    this.aceCount = 0;
+    this.value_ = 0;
+    this.aceCount_ = 0;
+    this.isUntouched_ = true;
+    this.startedAsPair_ = card1 === card2;
+    this.firstCard_ = card1;
+    this.isDoubledDown_ = false;
+
     this.add(card1);
     this.add(card2);
-    this.isUntouched = true;
-    this.startedAsPair = card1 === card2;
-    this.firstCard = card1;
-    this.isDoubled = false;
+    this.isUntouched_ = true;
   }
 
   add(card: Card): void {
-    this.value += card;
-    this.isUntouched = false;
+    this.value_ += card;
+    this.isUntouched_ = false;
     if (card === 11) {
-      this.aceCount += 1;
+      this.aceCount_ += 1;
     }
-    if (this.value > 21 && this.isSoft()) {
-      this.aceCount -= 1;
-      this.value -= 10;
+    if (this.value_ > 21 && this.isSoft()) {
+      this.aceCount_ -= 1;
+      this.value_ -= 10;
     }
+  }
+
+  doubleDown(card: Card): void {
+    this.add(card);
+    this.isDoubledDown_ = true;
   }
 
   type(): HandType {
@@ -50,18 +57,34 @@ export class Hand {
   }
 
   isBlackjack(): boolean {
-    return this.value === 21 && this.isUntouched;
+    return this.value_ === 21 && this.isUntouched_;
   }
 
   private isSoft(): boolean {
-    return this.aceCount > 0;
+    return this.aceCount_ > 0;
   }
 
   private isPair(): boolean {
-    return this.startedAsPair && this.isUntouched;
+    return this.startedAsPair_ && this.isUntouched_;
   }
 
   toString(): string {
-    return `${this.value}, type: ${HandType[this.type()]}, doubled: ${this.isDoubled}, first card: ${this.firstCard}`;
+    return `${this.value_}, type: ${HandType[this.type()]}, doubled: ${this.isDoubledDown_}, first card: ${this.firstCard_}`;
+  }
+
+  get value(): number {
+    return this.value_;
+  }
+
+  get isUntouched(): boolean {
+    return this.isUntouched_;
+  }
+
+  get firstCard(): Card {
+    return this.firstCard_;
+  }
+
+  get isDoubledDown(): boolean {
+    return this.isDoubledDown_;
   }
 }

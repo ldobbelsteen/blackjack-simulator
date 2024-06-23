@@ -7,7 +7,7 @@ describe("hand", () => {
     expect(hand.value).toBe(14);
     expect(hand.isUntouched).toBe(true);
     expect(hand.firstCard).toBe(10);
-    expect(hand.isDoubled).toBe(false);
+    expect(hand.isDoubledDown).toBe(false);
     expect(hand.type()).toBe(HandType.Hard);
 
     hand.add(3);
@@ -15,7 +15,7 @@ describe("hand", () => {
     expect(hand.value).toBe(25);
     expect(hand.isUntouched).toBe(false);
     expect(hand.firstCard).toBe(10);
-    expect(hand.isDoubled).toBe(false);
+    expect(hand.isDoubledDown).toBe(false);
     expect(hand.type()).toBe(HandType.Hard);
   });
 
@@ -24,14 +24,14 @@ describe("hand", () => {
     expect(hand.value).toBe(17);
     expect(hand.isUntouched).toBe(true);
     expect(hand.firstCard).toBe(6);
-    expect(hand.isDoubled).toBe(false);
+    expect(hand.isDoubledDown).toBe(false);
     expect(hand.type()).toBe(HandType.Soft);
 
     hand.add(9);
     expect(hand.value).toBe(16);
     expect(hand.isUntouched).toBe(false);
     expect(hand.firstCard).toBe(6);
-    expect(hand.isDoubled).toBe(false);
+    expect(hand.isDoubledDown).toBe(false);
     expect(hand.type()).toBe(HandType.Hard);
   });
 
@@ -40,14 +40,14 @@ describe("hand", () => {
     expect(hand.value).toBe(6);
     expect(hand.isUntouched).toBe(true);
     expect(hand.firstCard).toBe(3);
-    expect(hand.isDoubled).toBe(false);
+    expect(hand.isDoubledDown).toBe(false);
     expect(hand.type()).toBe(HandType.Pair);
 
     hand.add(11);
     expect(hand.value).toBe(17);
     expect(hand.isUntouched).toBe(false);
     expect(hand.firstCard).toBe(3);
-    expect(hand.isDoubled).toBe(false);
+    expect(hand.isDoubledDown).toBe(false);
     expect(hand.type()).toBe(HandType.Soft);
   });
 

@@ -140,8 +140,7 @@ export class Simulation {
           return leftSplitCount + rightSplitCount + 1;
         }
         case Action.Double:
-          playerHand.add(this.deck.takeCard());
-          playerHand.isDoubled = true;
+          playerHand.doubleDown(this.deck.takeCard());
           outputHand(playerHand);
           return 0;
         case Action.Surrender:
@@ -261,31 +260,31 @@ export class Simulation {
    */
   private determineWinner(playerHand: Hand, dealerHand: Hand, stats: Stats) {
     if (playerHand.value > 21) {
-      if (playerHand.isDoubled) {
+      if (playerHand.isDoubledDown) {
         stats.lossesAfterDoubling += 1;
       } else {
         stats.losses += 1;
       }
     } else if (dealerHand.value > 21) {
-      if (playerHand.isDoubled) {
+      if (playerHand.isDoubledDown) {
         stats.winsAfterDoubling += 1;
       } else {
         stats.wins += 1;
       }
     } else if (dealerHand.value === playerHand.value) {
-      if (playerHand.isDoubled) {
+      if (playerHand.isDoubledDown) {
         stats.pushesAfterDoubling += 1;
       } else {
         stats.pushes += 1;
       }
     } else if (dealerHand.value > playerHand.value) {
-      if (playerHand.isDoubled) {
+      if (playerHand.isDoubledDown) {
         stats.lossesAfterDoubling += 1;
       } else {
         stats.losses += 1;
       }
     } else if (dealerHand.value < playerHand.value) {
-      if (playerHand.isDoubled) {
+      if (playerHand.isDoubledDown) {
         stats.winsAfterDoubling += 1;
       } else {
         stats.wins += 1;
