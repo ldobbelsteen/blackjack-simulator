@@ -49,6 +49,10 @@ export class Hand {
     return HandType.Hard;
   }
 
+  isBlackjack(): boolean {
+    return this.value === 21 && this.isUntouched;
+  }
+
   private isSoft(): boolean {
     return this.aceCount > 0;
   }
