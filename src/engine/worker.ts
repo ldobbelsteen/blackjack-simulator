@@ -31,7 +31,7 @@ declare let self: BlackjackWorkerScope;
 self.onmessage = (ev) => {
   const rules = Rules.fromObject(ev.data.rules);
   const strategy = CompleteStrategy.fromObject(ev.data.strategy);
-  const simulation = new Simulation(rules, strategy, "crypto");
+  const simulation = new Simulation(rules, strategy);
 
   for (;;) {
     const stats = simulation.run(100_000);

@@ -11,7 +11,7 @@ export class Simulation {
   private strategy: CompleteStrategy;
   private deck: Deck;
 
-  constructor(rules: Rules, strategy: CompleteStrategy, entropySource: EntropySource) {
+  constructor(rules: Rules, strategy: CompleteStrategy, entropySource: EntropySource = "crypto") {
     this.rules = rules;
     this.strategy = strategy;
     this.deck = new Deck(rules.deckCount, rules.maxDeckPenetration, entropySource);
