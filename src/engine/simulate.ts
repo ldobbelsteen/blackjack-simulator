@@ -41,6 +41,9 @@ export class Simulation {
 
       /** Let the player play their turn and collect their resulting hand(s). */
       const playerFinalHands = this.playerTurn(playerHand, dealerHand, stats);
+      if (playerFinalHands === undefined) {
+        continue;
+      }
 
       /** Let the dealer play their turn. */
       while (
@@ -165,7 +168,7 @@ export class Simulation {
    * hand (or multiple in case of splits). The stats are kept up-to-date in case
    * of splits and surrenders.
    */
-  private playerTurn(playerHand: Hand, dealerHand: Hand, stats: Stats): Hand[] | Hand {
+  private playerTurn(playerHand: Hand, dealerHand: Hand, stats: Stats): Hand[] | Hand | undefined {
     let result: Hand[] | Hand | undefined = undefined;
     this.playerTurnRec(playerHand, dealerHand, stats, 0, (h: Hand) => {
       if (result === undefined) {
@@ -176,9 +179,6 @@ export class Simulation {
         result.push(h);
       }
     });
-    if (result === undefined) {
-      throw new Error("playerTurnRec should always return a result");
-    }
     return result;
   }
 
