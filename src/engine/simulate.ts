@@ -52,40 +52,14 @@ export class Simulation {
         dealerHand.add(this.deck.takeCard());
       }
 
-      /** Determine winner for each of the player's hands against the dealer's hand. */
-      playerFinalHands.forEach((playerHand) => {
-        if (playerHand.value > 21) {
-          if (playerHand.isDoubled) {
-            stats.lossesAfterDoubling += 1;
-          } else {
-            stats.losses += 1;
-          }
-        } else if (dealerHand.value > 21) {
-          if (playerHand.isDoubled) {
-            stats.winsAfterDoubling += 1;
-          } else {
-            stats.wins += 1;
-          }
-        } else if (dealerHand.value === playerHand.value) {
-          if (playerHand.isDoubled) {
-            stats.pushesAfterDoubling += 1;
-          } else {
-            stats.pushes += 1;
-          }
-        } else if (dealerHand.value > playerHand.value) {
-          if (playerHand.isDoubled) {
-            stats.lossesAfterDoubling += 1;
-          } else {
-            stats.losses += 1;
-          }
-        } else if (dealerHand.value < playerHand.value) {
-          if (playerHand.isDoubled) {
-            stats.winsAfterDoubling += 1;
-          } else {
-            stats.wins += 1;
-          }
+      /** Determine winner between player's hand(s) and the dealer's hand. */
+      if (playerFinalHands instanceof Hand) {
+        this.determineWinner(playerFinalHands, dealerHand, stats);
+      } else {
+        for (const playerFinalHand of playerFinalHands) {
+          this.determineWinner(playerFinalHand, dealerHand, stats);
         }
-      });
+      }
     }
 
     return stats;
@@ -191,10 +165,21 @@ export class Simulation {
    * hand (or multiple in case of splits). The stats are kept up-to-date in case
    * of splits and surrenders.
    */
-  private playerTurn(playerHand: Hand, dealerHand: Hand, stats: Stats): Hand[] {
-    const finalHands: Hand[] = [];
-    this.playerTurnRec(playerHand, dealerHand, stats, 0, finalHands);
-    return finalHands;
+  private playerTurn(playerHand: Hand, dealerHand: Hand, stats: Stats): Hand[] | Hand {
+    let result: Hand[] | Hand | undefined = undefined;
+    this.playerTurnRec(playerHand, dealerHand, stats, 0, (h: Hand) => {
+      if (result === undefined) {
+        result = h;
+      } else if (result instanceof Hand) {
+        result = [result, h];
+      } else {
+        result.push(h);
+      }
+    });
+    if (result === undefined) {
+      throw new Error("playerTurnRec should always return a result");
+    }
+    return result;
   }
 
   /**
@@ -206,7 +191,7 @@ export class Simulation {
     dealerHand: Hand,
     stats: Stats,
     prevSplitCount: number,
-    finalHands: Hand[],
+    outputHand: (h: Hand) => void,
   ): number {
     /** Loop until the player busts (the while guard) or otherwise breaks the loop. */
     while (playerHand.value < 21) {
@@ -224,7 +209,7 @@ export class Simulation {
           playerHand.add(this.deck.takeCard());
           break;
         case Action.Stand:
-          finalHands.push(playerHand);
+          outputHand(playerHand);
           return 0;
         case Action.Split: {
           stats.splits += 1;
@@ -235,7 +220,7 @@ export class Simulation {
             dealerHand,
             stats,
             prevSplitCount + 1,
-            finalHands,
+            outputHand,
           );
           const hand2 = new Hand(splitCard, this.deck.takeCard());
           const splitCount2 = this.playerTurnRec(
@@ -243,14 +228,14 @@ export class Simulation {
             dealerHand,
             stats,
             prevSplitCount + 1 + splitCount1,
-            finalHands,
+            outputHand,
           );
-          return splitCount1 + splitCount2;
+          return splitCount1 + splitCount2 + 1;
         }
         case Action.Double:
           playerHand.add(this.deck.takeCard());
           playerHand.isDoubled = true;
-          finalHands.push(playerHand);
+          outputHand(playerHand);
           return 0;
         case Action.Surrender:
           if (this.rules.allowSurrender === AllowSurrender.Early || !dealerHand.isBlackjack()) {
@@ -262,9 +247,45 @@ export class Simulation {
       }
     }
 
-    /** Add the hand to the final hands */
-    finalHands.push(playerHand);
-
+    outputHand(playerHand);
     return 0;
+  }
+
+  /**
+   * Determine the winner of a game based on the player's hand and the dealer's hand.
+   * Update the stats accordingly.
+   */
+  private determineWinner(playerHand: Hand, dealerHand: Hand, stats: Stats) {
+    if (playerHand.value > 21) {
+      if (playerHand.isDoubled) {
+        stats.lossesAfterDoubling += 1;
+      } else {
+        stats.losses += 1;
+      }
+    } else if (dealerHand.value > 21) {
+      if (playerHand.isDoubled) {
+        stats.winsAfterDoubling += 1;
+      } else {
+        stats.wins += 1;
+      }
+    } else if (dealerHand.value === playerHand.value) {
+      if (playerHand.isDoubled) {
+        stats.pushesAfterDoubling += 1;
+      } else {
+        stats.pushes += 1;
+      }
+    } else if (dealerHand.value > playerHand.value) {
+      if (playerHand.isDoubled) {
+        stats.lossesAfterDoubling += 1;
+      } else {
+        stats.losses += 1;
+      }
+    } else if (dealerHand.value < playerHand.value) {
+      if (playerHand.isDoubled) {
+        stats.winsAfterDoubling += 1;
+      } else {
+        stats.wins += 1;
+      }
+    }
   }
 }
