@@ -51,7 +51,7 @@ export class Rules {
 
   static default(): Rules {
     return new Rules(
-      AllowSurrender.Never,
+      AllowSurrender.Late,
       AllowDouble.Always,
       3,
       false,
@@ -60,7 +60,7 @@ export class Rules {
       true,
       1.5,
       75,
-      6,
+      8,
       Math.ceil(window.navigator.hardwareConcurrency / 2),
     );
   }
