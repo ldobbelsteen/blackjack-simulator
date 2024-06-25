@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import logoLightUrl from "../assets/logo-light.svg";
 import { Settings } from "./Settings";
 import { Strategy } from "./Strategy";
@@ -6,10 +6,11 @@ import { Results } from "./Results";
 import { EditableStrategy } from "../engine/strategy";
 import { Rules } from "../engine/rules";
 import { Toaster } from "react-hot-toast";
+import { useRulesPersistent, useStrategyPersistent } from "../storage";
 
 export function Index() {
-  const [rules, setRules] = useState(Rules.default());
-  const [strategy, setStrategy] = useState(EditableStrategy.default());
+  const [rules, setRules] = useRulesPersistent(Rules.default());
+  const [strategy, setStrategy] = useStrategyPersistent(EditableStrategy.default());
 
   return (
     <main>
