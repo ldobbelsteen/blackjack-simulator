@@ -7,7 +7,13 @@ export function Settings(props: { rules: Rules; setRules: (rules: Rules) => void
 
   return (
     <div id="settings">
-      <h3>Settings</h3>
+      <h3 style={{ display: "inline-block" }}>Settings</h3>
+      <button
+        style={{ width: "auto", marginLeft: "1rem" }}
+        onClick={() => props.setRules(Rules.default())}
+      >
+        Reset
+      </button>
       <table>
         <tbody>
           <RadioRow
@@ -163,7 +169,7 @@ export function Settings(props: { rules: Rules; setRules: (rules: Rules) => void
           </tr>
         </tbody>
       </table>
-      <button onClick={() => setInfoOpened(!infoOpened)}>
+      <button onClick={() => setInfoOpened(!infoOpened)} style={{ marginTop: "0.5rem" }}>
         {infoOpened ? "Less information" : "More information"}
       </button>
       {infoOpened && (

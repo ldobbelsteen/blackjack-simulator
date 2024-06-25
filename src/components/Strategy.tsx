@@ -8,7 +8,13 @@ export function Strategy(props: {
 }) {
   return (
     <>
-      <h3>Strategy</h3>
+      <h3 style={{ display: "inline-block", marginTop: "2rem" }}>Strategy</h3>
+      <button
+        style={{ width: "auto", marginLeft: "1rem" }}
+        onClick={() => props.setStrategy(EditableStrategy.default())}
+      >
+        Reset
+      </button>
       <p>
         The strategy the player uses is expressed in three tables. The top row is the dealer&apos;s
         upcard and the side row is the player&apos;s total hand value. Hard is the strategy for when

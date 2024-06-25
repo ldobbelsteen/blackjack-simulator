@@ -23,7 +23,7 @@ button {
     outline: none;
     border: none;
     width: 100%;
-    padding: 1rem;
+    padding: 0.6rem;
     font-weight: bold;
     transition-duration: 0.3s;
 }
@@ -74,10 +74,6 @@ main {
 #settings div {
     background-color: #2a2a2a;
     padding: 0.1rem 1rem;
-    margin-top: 0.5rem;
-}
-
-#settings button {
     margin-top: 0.5rem;
 }
 
