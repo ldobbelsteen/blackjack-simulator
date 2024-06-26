@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 
 const REFRESH_INTERVAL = 1000;
 
-export function Results(props: { rules: Rules; strategy: EditableStrategy }) {
+export function Simulator(props: { rules: Rules; strategy: EditableStrategy }) {
   const [stats, setStats] = useState(Stats.empty());
   const [lastStart, setLastStart] = useState(new Date());
   const [lastStop, setLastStop] = useState<Date | null>(lastStart);
@@ -62,7 +62,7 @@ export function Results(props: { rules: Rules; strategy: EditableStrategy }) {
 
   return (
     <>
-      <h3>Results</h3>
+      <h3>Simulator</h3>
       <p>
         The simulation can be started below. It will run until explicitly stopped. The live results
         are shown below. The balance is relative to the starting capital given you bet 1 unit each
@@ -71,7 +71,7 @@ export function Results(props: { rules: Rules; strategy: EditableStrategy }) {
         and that they represent loss/winnings given the house rules and your strategy in the
         real-world (assuming the simulator is perfect, which it might not be).
       </p>
-      <div id="results">
+      <div id="simulator">
         <button onClick={() => (lastStop === null ? stopSimulation() : startSimulation())}>
           {lastStop === null
             ? "Stop simulation"

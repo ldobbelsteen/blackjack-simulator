@@ -2,7 +2,7 @@ import React from "react";
 import logoLightUrl from "../assets/logo-light.svg";
 import { Settings } from "./Settings";
 import { Strategy } from "./Strategy";
-import { Results } from "./Results";
+import { Simulator } from "./Simulator";
 import { EditableStrategy } from "../engine/strategy";
 import { Rules } from "../engine/rules";
 import { Toaster } from "react-hot-toast";
@@ -31,7 +31,7 @@ export function Index() {
       </p>
       <Settings rules={rules} setRules={setRules} />
       <Strategy strategy={strategy} setStrategy={setStrategy} />
-      <Results strategy={strategy} rules={rules} />
+      <Simulator strategy={strategy} rules={rules} />
     </main>
   );
 }
