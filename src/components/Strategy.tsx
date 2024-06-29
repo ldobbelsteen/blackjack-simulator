@@ -1,4 +1,4 @@
-import React from "react";
+import React, { KeyboardEvent, useRef } from "react";
 import { EditableStrategy } from "../engine/strategy";
 import { HandType } from "../engine/hand";
 import toast from "react-hot-toast";
@@ -62,6 +62,47 @@ function StrategyTable(props: {
   strategy: EditableStrategy;
   setStrategy: (strategy: EditableStrategy) => void;
 }) {
+  const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
+
+  const columnHeaders = props.strategy.columnHeaders();
+  const rowHeaders = props.strategy.rowHeaders(props.type);
+
+  const rows = rowHeaders.length;
+  const cols = columnHeaders.length;
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>, row: number, col: number) => {
+    let input: HTMLInputElement | null = null;
+    switch (e.key) {
+      case "ArrowUp":
+        if (row > 0) {
+          input = inputsRef.current[(row - 1) * cols + col];
+        }
+        break;
+      case "ArrowDown":
+        if (row < rows - 1) {
+          input = inputsRef.current[(row + 1) * cols + col];
+        }
+        break;
+      case "ArrowLeft":
+        if (col > 0) {
+          input = inputsRef.current[row * cols + (col - 1)];
+        }
+        break;
+      case "ArrowRight":
+        if (col < cols - 1) {
+          input = inputsRef.current[row * cols + (col + 1)];
+        }
+        break;
+      default:
+        break;
+    }
+    if (input) {
+      e.preventDefault();
+      input.focus();
+      input.select();
+    }
+  };
+
   return (
     <div className="bg-darkgray p-2">
       <h3 className="text-center">{HandType[props.type]}</h3>
@@ -69,11 +110,11 @@ function StrategyTable(props: {
         <tbody>
           <tr>
             <th />
-            {props.strategy.columnHeaders().map((header, i) => (
+            {columnHeaders.map((header, i) => (
               <th key={i}>{header}</th>
             ))}
           </tr>
-          {props.strategy.rowHeaders(props.type).map((header, i) => (
+          {rowHeaders.map((header, i) => (
             <tr key={i}>
               <th>{header}</th>
               {props.strategy.columnHeaders().map((_, j) => (
@@ -89,6 +130,8 @@ function StrategyTable(props: {
                     }
                     onClick={(e) => e.currentTarget.select()}
                     style={{ backgroundColor: props.strategy.color(i, j, props.type) }}
+                    ref={(el) => (inputsRef.current[i * cols + j] = el)}
+                    onKeyDown={(e) => handleKeyDown(e, i, j)}
                   />
                 </td>
               ))}
