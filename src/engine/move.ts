@@ -63,6 +63,10 @@ export class Move {
   primary: Action | null;
   secondary: Action | null;
 
+  static hardValidStr = ["RH", "RS", "DH", "DS", "H", "S"];
+  static softValidStr = ["RH", "RS", "DH", "DS", "H", "S"];
+  static pairValidStr = ["RP", "P", ""];
+
   constructor(primary: Action | null, secondary: Action | null, type: HandType) {
     this.primary = primary;
     this.secondary = secondary;
@@ -75,11 +79,11 @@ export class Move {
   isValid(type: HandType): boolean {
     switch (type) {
       case HandType.Hard:
-        return ["RH", "RS", "DH", "DS", "H", "S"].includes(this.toString());
+        return Move.hardValidStr.includes(this.toString());
       case HandType.Soft:
-        return ["RH", "RS", "DH", "DS", "H", "S"].includes(this.toString());
+        return Move.softValidStr.includes(this.toString());
       case HandType.Pair:
-        return ["RP", "P", ""].includes(this.toString());
+        return Move.pairValidStr.includes(this.toString());
     }
   }
 

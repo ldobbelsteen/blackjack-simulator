@@ -22,8 +22,6 @@ export class Shuffler {
       case "deterministic":
         this.entropySource = deterministicEntropySource;
         break;
-      default:
-        throw new Error("invalid entropy source");
     }
 
     this.fetchEntropy();

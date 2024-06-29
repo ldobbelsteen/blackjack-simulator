@@ -1,117 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap');
 
-html {
-    font-family: "Montserrat", sans-serif;
-    font-size: 0.9rem;
-    background-color: #1a1a1a;
-    color: #e5e5e5;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-a {
-    color: inherit;
-}
+@layer base {
+  h1 {
+    @apply text-2xl font-bold;
+  }
 
-input {
-    font-family: inherit;
-}
+  h2 {
+    @apply text-xl font-bold;
+  }
 
-button {
-    background-color: #2a2a2a;
-    font-family: inherit;
-    color: inherit;
-    cursor: pointer;
-    outline: none;
-    border: none;
-    width: 100%;
-    padding: 0.6rem;
-    font-weight: bold;
-    transition-duration: 0.3s;
-}
+  h3 {
+    @apply text-lg font-bold;
+  }
 
-button:hover {
-    background-color: #3a3a3a;
-}
+  h4 {
+    @apply text-base font-bold;
+  }
 
-header {
-    margin: 1rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+  a {
+    @apply underline;
+  }
 
-header h1 {
-    margin: 0;
-    margin-left: 0.5rem;
-}
+  input {
+    @apply text-deepgray p-0.5;
+  }
 
-header img {
-    width: 2rem;
-    height: 2rem;
-}
-
-main {
-    flex: 1 0 auto;
-    max-width: 840px;
-    margin: 0 auto;
-    overflow: hidden;
-}
-
-#settings {
-    border: 0.25rem solid #2a2a2a;
-    padding: 0.8rem;
-    font-size: 0.8rem;
-}
-
-#settings h3 {
-    margin: 0;
-    margin-bottom: 0.5rem;
-}
-
-#settings table {
-    width: 100%;
-}
-
-#settings div {
-    background-color: #2a2a2a;
-    padding: 0.1rem 1rem;
-    margin-top: 0.5rem;
-}
-
-#strategy {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-#strategy div {
-    text-align: center;
-    background-color: #2a2a2a;
-    margin: 0.4rem;
-    padding: 0.4rem;
-}
-
-#strategy h3 {
-    margin: 0;
-    margin-bottom: 0.5rem;
-    margin-top: 0.5rem;
-}
-
-#strategy input {
-    vertical-align: middle;
-    text-align: center;
-    width: 1.8rem;
-    height: 1.8rem;
-    color: inherit;
-    border-width: 0px;
-    color: #1a1a1a;
-    font-size: 1rem;
-}
-
-#strategy table {
-    border-spacing: 1px;
-}
-
-#simulator {
-    border: 0.25rem solid #2a2a2a;
-    padding: 1rem;
+  input[type='radio'] {
+    @apply mr-1;
+  }
 }

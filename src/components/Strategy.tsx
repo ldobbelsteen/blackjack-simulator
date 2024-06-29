@@ -1,6 +1,8 @@
 import React from "react";
 import { EditableStrategy } from "../engine/strategy";
 import { HandType } from "../engine/hand";
+import toast from "react-hot-toast";
+import { Button } from "./Button";
 
 export function Strategy(props: {
   strategy: EditableStrategy;
@@ -8,14 +10,20 @@ export function Strategy(props: {
 }) {
   return (
     <>
-      <h3 style={{ display: "inline-block", marginTop: "2rem" }}>Strategy</h3>
-      <button
-        style={{ width: "auto", marginLeft: "1rem" }}
-        onClick={() => props.setStrategy(EditableStrategy.default())}
-      >
-        Reset
-      </button>
-      <p>
+      <div className="flex items-center gap-2">
+        <h3>Strategy</h3>
+        <Button
+          fullWidth={false}
+          onClick={() => {
+            props.setStrategy(EditableStrategy.default());
+            toast.success("Strategy reset");
+          }}
+        >
+          Reset
+        </Button>
+      </div>
+
+      <p className="mb-4 mt-2">
         The strategy the player uses is expressed in three tables. The top row is the dealer&apos;s
         upcard and the side row is the player&apos;s total hand value. Hard is the strategy for when
         you have a normal hand, soft is for when you have at least one ace which is compressible to
@@ -27,7 +35,8 @@ export function Strategy(props: {
         double-down, P = split, R = surrender. The default strategy filled in here is the standard
         basic strategy.
       </p>
-      <div id="strategy">
+
+      <div className="flex flex-wrap justify-center gap-2">
         <StrategyTable
           type={HandType.Hard}
           strategy={props.strategy}
@@ -54,8 +63,8 @@ function StrategyTable(props: {
   setStrategy: (strategy: EditableStrategy) => void;
 }) {
   return (
-    <div>
-      <h3>{HandType[props.type]}</h3>
+    <div className="bg-darkgray p-2">
+      <h3 className="text-center">{HandType[props.type]}</h3>
       <table>
         <tbody>
           <tr>
@@ -70,6 +79,7 @@ function StrategyTable(props: {
               {props.strategy.columnHeaders().map((_, j) => (
                 <td key={j}>
                   <input
+                    className="size-7 text-center align-middle"
                     value={props.strategy.input(i, j, props.type)}
                     placeholder={props.strategy.input(i, j, props.type) === "" ? "x" : undefined}
                     onChange={(e) =>

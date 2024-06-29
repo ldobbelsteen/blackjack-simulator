@@ -81,6 +81,14 @@ export class CompleteStrategy extends Strategy<Move> {
     };
   }
 
+  toEditable() {
+    return new EditableStrategy(
+      this.hard.map((row) => row.map((move) => move.toString())),
+      this.soft.map((row) => row.map((move) => move.toString())),
+      this.pair.map((row) => row.map((move) => move.toString())),
+    );
+  }
+
   static fromObject(obj: ReturnType<CompleteStrategy["toObject"]>): CompleteStrategy {
     return new CompleteStrategy(
       obj.hard.map((row) => row.map((cell) => Move.fromString(cell, HandType.Hard))),
@@ -117,33 +125,33 @@ export class EditableStrategy extends Strategy<string> {
     return ["2", "3", "4", "5", "6", "7", "8", "9", "10", "A"];
   }
 
-  color(i: number, j: number, type: HandType): string {
+  color(row: number, col: number, type: HandType): string {
     try {
       switch (type) {
         case HandType.Hard:
-          return Move.fromString(this.hard[i][j], type).color();
+          return Move.fromString(this.hard[row][col], type).color();
         case HandType.Soft:
-          return Move.fromString(this.soft[i][j], type).color();
+          return Move.fromString(this.soft[row][col], type).color();
         case HandType.Pair:
-          return Move.fromString(this.pair[i][j], type).color();
+          return Move.fromString(this.pair[row][col], type).color();
       }
     } catch (e) {
       return "red";
     }
   }
 
-  input(i: number, j: number, type: HandType): string {
+  input(row: number, col: number, type: HandType): string {
     switch (type) {
       case HandType.Hard:
-        return this.hard[i][j];
+        return this.hard[row][col];
       case HandType.Soft:
-        return this.soft[i][j];
+        return this.soft[row][col];
       case HandType.Pair:
-        return this.pair[i][j];
+        return this.pair[row][col];
     }
   }
 
-  withSet(i: number, j: number, type: HandType, value: string): EditableStrategy {
+  withSet(row: number, col: number, type: HandType, value: string): EditableStrategy {
     let hard = this.hard;
     let soft = this.soft;
     let pair = this.pair;
@@ -151,18 +159,18 @@ export class EditableStrategy extends Strategy<string> {
     switch (type) {
       case HandType.Hard:
         hard = [...this.hard];
-        hard[i] = [...this.hard[i]];
-        hard[i][j] = value;
+        hard[row] = [...this.hard[row]];
+        hard[row][col] = value;
         break;
       case HandType.Soft:
         soft = [...this.soft];
-        soft[i] = [...this.soft[i]];
-        soft[i][j] = value;
+        soft[row] = [...this.soft[row]];
+        soft[row][col] = value;
         break;
       case HandType.Pair:
         pair = [...this.pair];
-        pair[i] = [...this.pair[i]];
-        pair[i][j] = value;
+        pair[row] = [...this.pair[row]];
+        pair[row][col] = value;
         break;
     }
 

@@ -1,20 +1,29 @@
 import React, { useState } from "react";
 import { AllowDouble, AllowSurrender, Rules } from "../engine/rules";
 import { RadioRow } from "./RadioRow";
+import toast from "react-hot-toast";
+import { BorderedBox } from "./BorderedBox";
+import { Button } from "./Button";
 
 export function Settings(props: { rules: Rules; setRules: (rules: Rules) => void }) {
   const [infoOpened, setInfoOpened] = useState(false);
 
   return (
-    <div id="settings">
-      <h3 style={{ display: "inline-block" }}>Settings</h3>
-      <button
-        style={{ width: "auto", marginLeft: "1rem" }}
-        onClick={() => props.setRules(Rules.default())}
-      >
-        Reset
-      </button>
-      <table>
+    <BorderedBox>
+      <div className="flex items-center gap-2">
+        <h4>Settings</h4>
+        <Button
+          fullWidth={false}
+          onClick={() => {
+            props.setRules(Rules.default());
+            toast.success("Settings reset");
+          }}
+        >
+          Reset
+        </Button>
+      </div>
+
+      <table className="my-2 w-full border-separate border-spacing-1">
         <tbody>
           <RadioRow
             title="1. Allow surrender"
@@ -50,7 +59,7 @@ export function Settings(props: { rules: Rules; setRules: (rules: Rules) => void
             <td>3. Max splits</td>
             <td colSpan={3}>
               <input
-                style={{ width: "3rem" }}
+                className="w-12"
                 type="number"
                 min={0}
                 max={7}
@@ -118,7 +127,7 @@ export function Settings(props: { rules: Rules; setRules: (rules: Rules) => void
             <td>9. Max deck penetration</td>
             <td colSpan={3}>
               <input
-                style={{ width: "3rem" }}
+                className="w-12"
                 type="number"
                 min={5}
                 max={90}
@@ -136,7 +145,7 @@ export function Settings(props: { rules: Rules; setRules: (rules: Rules) => void
             <td>10. Deck count</td>
             <td colSpan={3}>
               <input
-                style={{ width: "3rem" }}
+                className="w-12"
                 type="number"
                 min={2}
                 max={8}
@@ -154,7 +163,7 @@ export function Settings(props: { rules: Rules; setRules: (rules: Rules) => void
             <td>11. Thread count</td>
             <td colSpan={3}>
               <input
-                style={{ width: "3rem" }}
+                className="w-12"
                 type="number"
                 min={1}
                 value={props.rules.threadCount}
@@ -169,11 +178,12 @@ export function Settings(props: { rules: Rules; setRules: (rules: Rules) => void
           </tr>
         </tbody>
       </table>
-      <button onClick={() => setInfoOpened(!infoOpened)} style={{ marginTop: "0.5rem" }}>
+
+      <Button onClick={() => setInfoOpened(!infoOpened)} fullWidth={true}>
         {infoOpened ? "Less information" : "More information"}
-      </button>
+      </Button>
       {infoOpened && (
-        <div className="info-box">
+        <div className="mt-2 bg-darkgray p-4 [&_p]:my-2">
           <p>
             1. Surrendering is a starting move in which the player gives up their hand and loses
             half of their bet. It can only be done on the initial hand and therefore not after
@@ -231,6 +241,6 @@ export function Settings(props: { rules: Rules; setRules: (rules: Rules) => void
           </p>
         </div>
       )}
-    </div>
+    </BorderedBox>
   );
 }

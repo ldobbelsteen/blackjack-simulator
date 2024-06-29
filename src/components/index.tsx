@@ -7,17 +7,18 @@ import { EditableStrategy } from "../engine/strategy";
 import { Rules } from "../engine/rules";
 import { Toaster } from "react-hot-toast";
 import { useRulesPersistent, useStrategyPersistent } from "../storage";
+import { Optimizer } from "./Optimizer";
 
 export function Index() {
   const [rules, setRules] = useRulesPersistent(Rules.default());
   const [strategy, setStrategy] = useStrategyPersistent(EditableStrategy.default());
 
   return (
-    <main>
+    <main className="m-auto max-w-3xl shrink-0 grow overflow-hidden">
       <Toaster />
-      <header>
-        <img alt="Logo" src={logoLightUrl} />
-        <h1>Blackjack Simulator</h1>
+      <header className="m-4 flex items-center justify-center">
+        <img className="size-8" alt="Logo" src={logoLightUrl} />
+        <h1 className="ml-2">Blackjack Simulator</h1>
       </header>
       <p>
         A simulator for the popular card game blackjack. It simulates millions of blackjack games in
@@ -29,9 +30,14 @@ export function Index() {
         it is run locally. Only modern browsers are supported. This project is open source and can
         be found on <a href="https://github.com/ldobbelsteen/blackjack-simulator">GitHub</a>.
       </p>
+      <br />
       <Settings rules={rules} setRules={setRules} />
+      <br />
       <Strategy strategy={strategy} setStrategy={setStrategy} />
+      <br />
       <Simulator strategy={strategy} rules={rules} />
+      <br />
+      <Optimizer rules={rules} base={strategy} />
     </main>
   );
 }

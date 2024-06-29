@@ -17,6 +17,12 @@ describe("editableStrategy", () => {
     expect(JSON.stringify(strategy1)).toBe(JSON.stringify(strategy2));
   });
 
+  it("toEditable", () => {
+    const strategy1 = EditableStrategy.default();
+    const strategy2 = strategy1.toComplete().toEditable();
+    expect(JSON.stringify(strategy1)).toBe(JSON.stringify(strategy2));
+  });
+
   it("rowHeaders", () => {
     const strategy = EditableStrategy.default();
     expect(strategy.rowHeaders(HandType.Hard).length).toBe(strategy.hard.length);

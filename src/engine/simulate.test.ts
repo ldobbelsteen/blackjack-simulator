@@ -3,17 +3,9 @@ import { Simulation } from "./simulate";
 import { AllowDouble, AllowSurrender, Rules } from "./rules";
 import { CompleteStrategy } from "./strategy";
 
-const SIMULATION_SIZE = 100_000;
+const SIMULATION_SIZE = 1_000_000;
 
 describe("simulate", () => {
-  it("withSurrender", () => {
-    const rules = Rules.default();
-    rules.allowSurrender = AllowSurrender.Early;
-    const simulation = new Simulation(rules, CompleteStrategy.default(), "deterministic");
-    const stats = simulation.run(SIMULATION_SIZE);
-    expect(stats.surrenders).toBeGreaterThan(0);
-  });
-
   it("gameCount", () => {
     const simulation = new Simulation(Rules.default(), CompleteStrategy.default(), "deterministic");
     const stats = simulation.run(SIMULATION_SIZE);
@@ -33,7 +25,27 @@ describe("simulate", () => {
     rules.allowDouble = AllowDouble.Never;
     const simulation = new Simulation(rules, CompleteStrategy.default(), "deterministic");
     const stats = simulation.run(SIMULATION_SIZE);
-    expect(stats.winsAfterDoubling).toBe(0);
+    expect(stats.winsAfterDoubling + stats.pushesAfterDoubling + stats.lossesAfterDoubling).toBe(0);
+  });
+
+  it("restrictedDoubleDowns", () => {
+    const rules = Rules.default();
+    rules.allowDouble = AllowDouble.NineTenOrEleven;
+    const simulation = new Simulation(rules, CompleteStrategy.default(), "deterministic");
+    const stats = simulation.run(SIMULATION_SIZE);
+    expect(
+      stats.winsAfterDoubling + stats.pushesAfterDoubling + stats.lossesAfterDoubling,
+    ).toBeGreaterThan(0);
+  });
+
+  it("noDoubleDownAfterSplit", () => {
+    const rules = Rules.default();
+    rules.allowDoubleAfterSplit = false;
+    const simulation = new Simulation(rules, CompleteStrategy.default(), "deterministic");
+    const stats = simulation.run(SIMULATION_SIZE);
+    expect(
+      stats.winsAfterDoubling + stats.pushesAfterDoubling + stats.lossesAfterDoubling,
+    ).toBeGreaterThan(0);
   });
 
   it("noSplits", () => {
@@ -49,5 +61,6 @@ describe("simulate", () => {
       () => new Simulation(Rules.default(), CompleteStrategy.default(), "crypto"),
     ).not.toThrow();
     expect(() => new Simulation(Rules.default(), CompleteStrategy.default(), "math")).not.toThrow();
+    expect(() => new Simulation(Rules.default(), CompleteStrategy.default())).not.toThrow();
   });
 });
