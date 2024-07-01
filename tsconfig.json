@@ -2,15 +2,13 @@
   "compilerOptions": {
     "allowJs": false,
     "esModuleInterop": true,
-    "jsx": "react",
+    "jsx": "preserve",
     "lib": [
       "dom",
       "esnext",
       "webworker"
     ],
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
+    "module": "preserve",
     "skipLibCheck": true,
     "strict": true,
     "target": "esnext",
