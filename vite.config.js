@@ -1,7 +1,5 @@
-/// <reference types="vitest" />
-import { defineConfig } from "vite";
-
-export default defineConfig({
+/** @type {import('vite').UserConfig} */
+export default {
   build: {
     target: "es2022",
   },
@@ -13,4 +11,4 @@ export default defineConfig({
       exclude: ["src/engine/worker.ts"],
     },
   },
-});
+};
