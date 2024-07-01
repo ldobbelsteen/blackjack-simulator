@@ -33,7 +33,7 @@ function accumulateJobs(
           if (move !== existingMove) {
             const dealerCard = editableBase.columnHeaders()[col];
             const playerHand = editableBase.rowHeaders(HandType.Hard)[row];
-            const changeId = `hard player ${playerHand} vs dealer ${dealerCard} to ${move}`;
+            const changeId = `hard player ${playerHand} vs. dealer ${dealerCard} to ${move}`;
             jobs.push({
               changeId: changeId,
               strategy: editableBase.withSet(row, col, HandType.Hard, move).toComplete(),
@@ -52,7 +52,7 @@ function accumulateJobs(
           if (move !== existingMove) {
             const dealerCard = editableBase.columnHeaders()[col];
             const playerHand = editableBase.rowHeaders(HandType.Soft)[row];
-            const changeId = `soft player ${playerHand} vs dealer ${dealerCard} to ${move}`;
+            const changeId = `soft player ${playerHand} vs. dealer ${dealerCard} to ${move}`;
             jobs.push({
               changeId: changeId,
               strategy: editableBase.withSet(row, col, HandType.Soft, move).toComplete(),
@@ -71,7 +71,7 @@ function accumulateJobs(
           if (move !== existingMove) {
             const dealerCard = editableBase.columnHeaders()[col];
             const playerHand = editableBase.rowHeaders(HandType.Pair)[row];
-            const changeId = `pair player ${playerHand} vs dealer ${dealerCard} to ${move}`;
+            const changeId = `pair player ${playerHand} vs. dealer ${dealerCard} to ${move || "x"}`;
             jobs.push({
               changeId: changeId,
               strategy: editableBase.withSet(row, col, HandType.Pair, move).toComplete(),
