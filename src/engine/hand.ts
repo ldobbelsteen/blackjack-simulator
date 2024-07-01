@@ -68,6 +68,10 @@ export class Hand {
     return this.startedAsPair_ && this.isUntouched_;
   }
 
+  downgradePair() {
+    this.startedAsPair_ = false;
+  }
+
   toString(): string {
     return `${this.value_}, type: ${HandType[this.type()]}, doubled: ${this.isDoubledDown_}, first card: ${this.firstCard_}`;
   }

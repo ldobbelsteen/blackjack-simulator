@@ -7,7 +7,7 @@ export class Shuffler {
   private entropy: Uint16Array;
   private entropySource: (arr: Uint16Array) => void;
 
-  constructor(entropySource: EntropySource) {
+  constructor(entropySource: EntropySource = "crypto") {
     this.index = 0;
     this.length = 65536 / Uint16Array.BYTES_PER_ELEMENT;
     this.entropy = new Uint16Array(this.length);
@@ -78,13 +78,22 @@ function cryptoEntropySource(arr: Uint16Array) {
 /** Entropy source using the Math API. */
 function mathEntropySource(arr: Uint16Array) {
   for (let i = 0; i < arr.length; i += 1) {
-    arr[i] = Math.floor(Math.random() * 65536);
+    const rand = Math.random();
+    arr[i] = Math.floor(rand * 65536);
   }
 }
 
 /** Deterministic entropy source for testing purposes. */
 function deterministicEntropySource(arr: Uint16Array) {
+  let seed = 1;
   for (let i = 0; i < arr.length; i += 1) {
-    arr[i] = i;
+    const rand = seededRandom(seed++);
+    arr[i] = Math.floor(rand * 65536);
   }
+}
+
+/** Get a random number between 0 and 1 with a seed (not very random). */
+function seededRandom(seed: number) {
+  const result = Math.sin(seed) * 10000;
+  return result - Math.floor(result);
 }

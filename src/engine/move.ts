@@ -63,17 +63,14 @@ export class Move {
   primary: Action | null;
   secondary: Action | null;
 
+  /** All valid move string representations per hand type. */
   static hardValidStr = ["RH", "RS", "DH", "DS", "H", "S"];
   static softValidStr = ["RH", "RS", "DH", "DS", "H", "S"];
   static pairValidStr = ["RP", "P", ""];
 
-  constructor(primary: Action | null, secondary: Action | null, type: HandType) {
+  constructor(primary: Action | null, secondary: Action | null) {
     this.primary = primary;
     this.secondary = secondary;
-
-    if (!this.isValid(type)) {
-      throw new Error(`move is invalid: ${this.toString()}`);
-    }
   }
 
   isValid(type: HandType): boolean {
@@ -88,16 +85,26 @@ export class Move {
   }
 
   static fromString(s: string, type: HandType): Move {
+    let result: Move;
     switch (s.length) {
       case 0:
-        return new Move(null, null, type);
+        result = new Move(null, null);
+        break;
       case 1:
-        return new Move(null, charToAction(s[0]), type);
+        result = new Move(null, charToAction(s[0]));
+        break;
       case 2:
-        return new Move(charToAction(s[0]), charToAction(s[1]), type);
+        result = new Move(charToAction(s[0]), charToAction(s[1]));
+        break;
       default:
-        throw new Error(`move is invalid: ${s}`);
+        throw new Error(`move has invalid number of characters: ${s}`);
     }
+
+    if (!result.isValid(type)) {
+      throw new Error(`move is invalid: ${s}`);
+    }
+
+    return result;
   }
 
   toString(): string {

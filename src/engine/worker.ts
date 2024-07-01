@@ -1,5 +1,5 @@
 import { Rules } from "./rules";
-import { Simulation } from "./simulate";
+import { Simulation } from "./simulation";
 import { Stats } from "./stats";
 import { CompleteStrategy } from "./strategy";
 

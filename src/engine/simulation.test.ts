@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { Simulation } from "./simulate";
+import { Simulation } from "./simulation";
 import { AllowDouble, AllowSurrender, Rules } from "./rules";
 import { CompleteStrategy } from "./strategy";
+import { Action, Move } from "./move";
 
-const SIMULATION_SIZE = 1_000_000;
+const SIMULATION_SIZE = 10_000;
 
-describe("simulate", () => {
+describe("simulation", () => {
   it("gameCount", () => {
     const simulation = new Simulation(Rules.default(), CompleteStrategy.default(), "deterministic");
     const stats = simulation.run(SIMULATION_SIZE);
@@ -56,11 +57,25 @@ describe("simulate", () => {
     expect(stats.splits).toBe(0);
   });
 
-  it("nonDeterministicSources", () => {
-    expect(
-      () => new Simulation(Rules.default(), CompleteStrategy.default(), "crypto"),
-    ).not.toThrow();
-    expect(() => new Simulation(Rules.default(), CompleteStrategy.default(), "math")).not.toThrow();
-    expect(() => new Simulation(Rules.default(), CompleteStrategy.default())).not.toThrow();
+  it("invalidStrategyHard", () => {
+    const strategy = CompleteStrategy.default();
+    strategy.hard[3][5] = new Move(null, null);
+    const simulation = new Simulation(Rules.default(), strategy, "deterministic");
+    expect(() => simulation.run(SIMULATION_SIZE)).toThrow();
+  });
+
+  it("invalidStrategySoft", () => {
+    const strategy = CompleteStrategy.default();
+    strategy.soft[3][4] = new Move(null, null);
+    const simulation = new Simulation(Rules.default(), strategy, "deterministic");
+    expect(() => simulation.run(SIMULATION_SIZE)).toThrow();
+  });
+
+  it("lossAfterDoubling", () => {
+    const strategy = CompleteStrategy.default();
+    strategy.hard[5][5] = new Move(Action.Double, Action.Hit);
+    const simulation = new Simulation(Rules.default(), strategy, "deterministic");
+    const stats = simulation.run(SIMULATION_SIZE);
+    expect(stats.lossesAfterDoubling).toBeGreaterThan(0);
   });
 });

@@ -1,4 +1,4 @@
-import { EntropySource, Shuffler } from "./shuffle";
+import { EntropySource, Shuffler } from "./shuffler";
 
 /** A regular playing card. Jacks, queens and kings are represented by 10 */
 export type Card = 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
@@ -13,7 +13,7 @@ export class Deck {
   private threshold: number;
   private shuffler: Shuffler;
 
-  constructor(deckCount: number, shuffleThreshold: number, entropySource: EntropySource) {
+  constructor(deckCount: number, shuffleThreshold: number, entropySource?: EntropySource) {
     const suit: Card[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11];
 
     this.index = 0;

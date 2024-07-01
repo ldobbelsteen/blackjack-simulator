@@ -31,7 +31,7 @@ export function Strategy(props: {
         standard letter combinations. Invalid cells are highlighted dark red. The first letter gives
         the preferred move and the second gives the move if the first one is not allowed in a
         particular situation. If neither are possible in the pair strategy (or the cell is empty,
-        marked with an x), the simulator falls back to the hard strategy. H = hit, S = stand, D =
+        marked with an x), the simulator falls back to the other tables. H = hit, S = stand, D =
         double-down, P = split, R = surrender. The default strategy filled in here is the standard
         basic strategy.
       </p>

@@ -1,8 +1,8 @@
-import { Card, Deck } from "./deck";
+import { Deck } from "./deck";
 import { Hand, HandType } from "./hand";
 import { Action } from "./move";
 import { type Rules, AllowDouble, AllowSurrender } from "./rules";
-import { EntropySource } from "./shuffle";
+import { EntropySource } from "./shuffler";
 import { Stats } from "./stats";
 import { type CompleteStrategy } from "./strategy";
 
@@ -11,7 +11,7 @@ export class Simulation {
   private strategy: CompleteStrategy;
   private deck: Deck;
 
-  constructor(rules: Rules, strategy: CompleteStrategy, entropySource: EntropySource = "crypto") {
+  constructor(rules: Rules, strategy: CompleteStrategy, entropySource?: EntropySource) {
     this.rules = rules;
     this.strategy = strategy;
     this.deck = new Deck(rules.deckCount, rules.maxDeckPenetration, entropySource);
@@ -100,19 +100,11 @@ export class Simulation {
   ): number {
     /** Loop until the player busts. */
     while (playerHand.value < 21) {
-      /** Determine the action to execute and execute it. */
-      switch (
-        this.determineAction(
-          playerHand.type(),
-          playerHand.value,
-          playerHand.isUntouched,
-          dealerHand.firstCard,
-          prevSplitCount,
-        )
-      ) {
+      /** Determine the action to take and execute it. */
+      switch (this.determineAction(playerHand, dealerHand, prevSplitCount)) {
         case Action.Hit:
           playerHand.add(this.deck.takeCard());
-          continue;
+          break;
         case Action.Stand:
           outputHand(playerHand);
           return 0;
@@ -151,7 +143,6 @@ export class Simulation {
           }
           return 0;
       }
-      throw new Error("no action taken unexpectedly");
     }
 
     outputHand(playerHand);
@@ -159,67 +150,86 @@ export class Simulation {
   }
 
   /** Get the action a player takes based on the circumstances and its strategy. */
-  private determineAction(
-    handType: HandType,
-    handValue: number,
-    handIsUntouched: boolean,
-    dealerUpcard: Card,
-    splitCount: number,
-  ): Action {
-    switch (handType) {
+  private determineAction(playerHand: Hand, dealerHand: Hand, splitCount: number): Action {
+    switch (playerHand.type()) {
       case HandType.Pair: {
-        const pairMove = this.strategy.pairMove(handValue, dealerUpcard);
+        const pairMove = this.strategy.pairMove(playerHand.value, dealerHand.firstCard);
         if (
           pairMove.primary !== null &&
-          this.actionIsAvailable(pairMove.primary, handValue, handIsUntouched, splitCount)
+          this.actionIsAvailable(
+            pairMove.primary,
+            playerHand.value,
+            playerHand.isUntouched,
+            splitCount,
+          )
         ) {
           return pairMove.primary;
         } else if (
           pairMove.secondary !== null &&
-          this.actionIsAvailable(pairMove.secondary, handValue, handIsUntouched, splitCount)
+          this.actionIsAvailable(
+            pairMove.secondary,
+            playerHand.value,
+            playerHand.isUntouched,
+            splitCount,
+          )
         ) {
           return pairMove.secondary;
         } else {
-          /** If neither is possible, regard this hand as just hard. */
-          return this.determineAction(
-            HandType.Hard,
-            handValue,
-            handIsUntouched,
-            dealerUpcard,
-            splitCount,
-          );
+          /** If neither is possible, fall back to other strategies. */
+          playerHand.downgradePair();
+          return this.determineAction(playerHand, dealerHand, splitCount);
         }
       }
       case HandType.Soft: {
-        const softMove = this.strategy.softMove(handValue, dealerUpcard);
+        const softMove = this.strategy.softMove(playerHand.value, dealerHand.firstCard);
         if (
           softMove.primary !== null &&
-          this.actionIsAvailable(softMove.primary, handValue, handIsUntouched, splitCount)
+          this.actionIsAvailable(
+            softMove.primary,
+            playerHand.value,
+            playerHand.isUntouched,
+            splitCount,
+          )
         ) {
           return softMove.primary;
         } else if (
           softMove.secondary !== null &&
-          this.actionIsAvailable(softMove.secondary, handValue, handIsUntouched, splitCount)
+          this.actionIsAvailable(
+            softMove.secondary,
+            playerHand.value,
+            playerHand.isUntouched,
+            splitCount,
+          )
         ) {
           return softMove.secondary;
         } else {
-          throw new Error(`invalid move: ${softMove.toString()}`);
+          throw new Error(`invalid soft move: ${softMove.toString()}`);
         }
       }
       case HandType.Hard: {
-        const hardMove = this.strategy.hardMove(handValue, dealerUpcard);
+        const hardMove = this.strategy.hardMove(playerHand.value, dealerHand.firstCard);
         if (
           hardMove.primary !== null &&
-          this.actionIsAvailable(hardMove.primary, handValue, handIsUntouched, splitCount)
+          this.actionIsAvailable(
+            hardMove.primary,
+            playerHand.value,
+            playerHand.isUntouched,
+            splitCount,
+          )
         ) {
           return hardMove.primary;
         } else if (
           hardMove.secondary !== null &&
-          this.actionIsAvailable(hardMove.secondary, handValue, handIsUntouched, splitCount)
+          this.actionIsAvailable(
+            hardMove.secondary,
+            playerHand.value,
+            playerHand.isUntouched,
+            splitCount,
+          )
         ) {
           return hardMove.secondary;
         } else {
-          throw new Error(`invalid move: ${hardMove.toString()}`);
+          throw new Error(`invalid hard move: ${hardMove.toString()}`);
         }
       }
     }
@@ -283,7 +293,7 @@ export class Simulation {
       } else {
         stats.losses += 1;
       }
-    } else if (dealerHand.value < playerHand.value) {
+    } else {
       if (playerHand.isDoubledDown) {
         stats.winsAfterDoubling += 1;
       } else {

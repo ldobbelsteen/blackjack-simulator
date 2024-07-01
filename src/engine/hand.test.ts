@@ -51,6 +51,23 @@ describe("hand", () => {
     expect(hand.type()).toBe(HandType.Soft);
   });
 
+  it("doubleDown", () => {
+    const hand = new Hand(10, 4);
+    hand.doubleDown(3);
+    expect(hand.value).toBe(17);
+    expect(hand.isUntouched).toBe(false);
+    expect(hand.firstCard).toBe(10);
+    expect(hand.isDoubledDown).toBe(true);
+    expect(hand.type()).toBe(HandType.Hard);
+  });
+
+  it("isBlackjack", () => {
+    const hand = new Hand(11, 10);
+    expect(hand.isBlackjack()).toBe(true);
+    hand.add(5);
+    expect(hand.isBlackjack()).toBe(false);
+  });
+
   it("toString", () => {
     const hand = new Hand(10, 4);
     expect(hand.toString()).toBe("14, type: Hard, doubled: false, first card: 10");
