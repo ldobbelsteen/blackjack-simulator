@@ -146,6 +146,7 @@ export function Optimizer(props: { rules: Rules; base: EditableStrategy }) {
       try {
         completeBase = props.base.toComplete();
       } catch (e) {
+        console.error(e);
         toast.error("Base strategy is not valid");
         setRunning(false);
         return;
@@ -182,6 +183,7 @@ export function Optimizer(props: { rules: Rules; base: EditableStrategy }) {
     try {
       completeBase = props.base.toComplete();
     } catch (e) {
+      console.error(e);
       toast.error("Base strategy is not valid");
       setRunning(false);
       return;
@@ -208,10 +210,10 @@ export function Optimizer(props: { rules: Rules; base: EditableStrategy }) {
         setResults((prev) => {
           if (prev === null) {
             return { [jobIndex]: result };
-          } else if (prev[jobIndex] === undefined) {
-            return { ...prev, [jobIndex]: result };
-          } else {
+          } else if (jobIndex in prev) {
             return prev;
+          } else {
+            return { ...prev, [jobIndex]: result };
           }
         });
       }
@@ -247,7 +249,9 @@ export function Optimizer(props: { rules: Rules; base: EditableStrategy }) {
                     step={10_000_000}
                     value={minBaseGameCount}
                     className="w-32"
-                    onChange={(e) => setMinBaseGameCount(parseInt(e.target.value))}
+                    onChange={(e) => {
+                      setMinBaseGameCount(parseInt(e.target.value));
+                    }}
                   />
                 </td>
               </tr>
@@ -260,7 +264,9 @@ export function Optimizer(props: { rules: Rules; base: EditableStrategy }) {
                     step={10_000_000}
                     value={minTestGameCount}
                     className="w-32"
-                    onChange={(e) => setMinTestGameCount(parseInt(e.target.value))}
+                    onChange={(e) => {
+                      setMinTestGameCount(parseInt(e.target.value));
+                    }}
                   />
                 </td>
               </tr>
@@ -270,7 +276,9 @@ export function Optimizer(props: { rules: Rules; base: EditableStrategy }) {
                   <input
                     type="checkbox"
                     checked={includeHard}
-                    onChange={(e) => setIncludeHard(e.target.checked)}
+                    onChange={(e) => {
+                      setIncludeHard(e.target.checked);
+                    }}
                   />
                 </td>
               </tr>
@@ -280,7 +288,9 @@ export function Optimizer(props: { rules: Rules; base: EditableStrategy }) {
                   <input
                     type="checkbox"
                     checked={includeSoft}
-                    onChange={(e) => setIncludeSoft(e.target.checked)}
+                    onChange={(e) => {
+                      setIncludeSoft(e.target.checked);
+                    }}
                   />
                 </td>
               </tr>
@@ -290,20 +300,27 @@ export function Optimizer(props: { rules: Rules; base: EditableStrategy }) {
                   <input
                     type="checkbox"
                     checked={includePair}
-                    onChange={(e) => setIncludePair(e.target.checked)}
+                    onChange={(e) => {
+                      setIncludePair(e.target.checked);
+                    }}
                   />
                 </td>
               </tr>
             </tbody>
           </table>
-          <Button onClick={() => setRunning((prev) => !prev)} fullWidth={true}>
+          <Button
+            onClick={() => {
+              setRunning((prev) => !prev);
+            }}
+            fullWidth={true}
+          >
             {jobs === null
               ? results !== null
                 ? "Restart"
                 : "Start"
               : baseHouseEdge === null
                 ? "Stop (calculating base house edge...)"
-                : `Stop (${jobs.length - jobIndex} changes remaining...)`}
+                : `Stop (${(jobs.length - jobIndex).toString()} changes remaining...)`}
           </Button>
         </BorderedBox>
         <BorderedBox>

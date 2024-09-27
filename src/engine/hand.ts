@@ -73,7 +73,7 @@ export class Hand {
   }
 
   toString(): string {
-    return `${this.value_}, type: ${HandType[this.type()]}, doubled: ${this.isDoubledDown_}, first card: ${this.firstCard_}`;
+    return `${this.value_.toString()}, type: ${HandType[this.type()]}, doubled: ${this.isDoubledDown_ ? "true" : "false"}, first card: ${this.firstCard_.toString()}`;
   }
 
   get value(): number {

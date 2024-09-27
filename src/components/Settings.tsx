@@ -179,7 +179,12 @@ export function Settings(props: { rules: Rules; setRules: (rules: Rules) => void
         </tbody>
       </table>
 
-      <Button onClick={() => setInfoOpened(!infoOpened)} fullWidth={true}>
+      <Button
+        onClick={() => {
+          setInfoOpened(!infoOpened);
+        }}
+        fullWidth={true}
+      >
         {infoOpened ? "Less information" : "More information"}
       </Button>
       {infoOpened && (

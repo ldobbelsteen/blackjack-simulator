@@ -115,7 +115,7 @@ export class EditableStrategy extends Strategy<string> {
           v.toString(),
         );
       case HandType.Soft:
-        return [9, 8, 7, 6, 5, 4, 3, 2, 1].map((v) => `A+${v}`);
+        return [9, 8, 7, 6, 5, 4, 3, 2, 1].map((v) => `A+${v.toString()}`);
       case HandType.Pair:
         return ["AA", "TT", "99", "88", "77", "66", "55", "44", "33", "22"];
     }
@@ -135,7 +135,7 @@ export class EditableStrategy extends Strategy<string> {
         case HandType.Pair:
           return Move.fromString(this.pair[row][col], type).color();
       }
-    } catch (e) {
+    } catch {
       return "red";
     }
   }

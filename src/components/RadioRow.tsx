@@ -16,7 +16,9 @@ export function RadioRow(props: {
             id={props.title + option}
             value={option}
             checked={option === props.selected}
-            onChange={() => props.setSelected(option)}
+            onChange={() => {
+              props.setSelected(option);
+            }}
           />
           <label htmlFor={props.title + option}>{option}</label>
         </td>

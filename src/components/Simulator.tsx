@@ -25,6 +25,7 @@ export function Simulator(props: { rules: Rules; strategy: EditableStrategy }) {
         completeStrategy = props.strategy.toComplete();
       } catch (e) {
         toast.error("Strategy is not valid");
+        console.error(e);
         setRunning(false);
         return;
       }
@@ -50,7 +51,9 @@ export function Simulator(props: { rules: Rules; strategy: EditableStrategy }) {
         workers.push(worker);
       }
 
-      const refreshStats = () => setStats(liveStats.copy());
+      const refreshStats = () => {
+        setStats(liveStats.copy());
+      };
       const refreshInterval = setInterval(refreshStats, REFRESH_INTERVAL);
       refreshStats();
 
@@ -86,7 +89,12 @@ export function Simulator(props: { rules: Rules; strategy: EditableStrategy }) {
       </p>
 
       <BorderedBox>
-        <Button onClick={() => setRunning((prev) => !prev)} fullWidth={true}>
+        <Button
+          onClick={() => {
+            setRunning((prev) => !prev);
+          }}
+          fullWidth={true}
+        >
           {running
             ? "Stop simulation"
             : stats.gameCount() === 0

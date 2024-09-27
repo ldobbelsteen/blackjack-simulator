@@ -14,6 +14,7 @@ export function useStrategyPersistent(
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       return EditableStrategy.fromObject(JSON.parse(value));
     } catch (e) {
+      console.error(e);
       localStorage.setItem("strategy", JSON.stringify(defaultValue.toObject()));
       return defaultValue;
     }
@@ -37,6 +38,7 @@ export function useRulesPersistent(defaultValue: Rules): [Rules, (newVal: Rules)
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       return Rules.fromObject(JSON.parse(value));
     } catch (e) {
+      console.error(e);
       localStorage.setItem("rules", JSON.stringify(defaultValue.toObject()));
       return defaultValue;
     }

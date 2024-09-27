@@ -123,15 +123,19 @@ function StrategyTable(props: {
                     className="size-7 text-center align-middle"
                     value={props.strategy.input(i, j, props.type)}
                     placeholder={props.strategy.input(i, j, props.type) === "" ? "x" : undefined}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       props.setStrategy(
                         props.strategy.withSet(i, j, props.type, e.target.value.toUpperCase()),
-                      )
-                    }
-                    onClick={(e) => e.currentTarget.select()}
+                      );
+                    }}
+                    onClick={(e) => {
+                      e.currentTarget.select();
+                    }}
                     style={{ backgroundColor: props.strategy.color(i, j, props.type) }}
                     ref={(el) => (inputsRef.current[i * cols + j] = el)}
-                    onKeyDown={(e) => handleKeyDown(e, i, j)}
+                    onKeyDown={(e) => {
+                      handleKeyDown(e, i, j);
+                    }}
                   />
                 </td>
               ))}

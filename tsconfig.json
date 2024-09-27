@@ -1,19 +1,26 @@
 {
   "compilerOptions": {
-    "allowJs": false,
+    "allowJs": true,
     "esModuleInterop": true,
     "jsx": "preserve",
     "lib": [
       "dom",
       "esnext",
-      "webworker"
+      "webworker",
     ],
-    "module": "preserve",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "outDir": "out",
     "skipLibCheck": true,
     "strict": true,
-    "target": "esnext",
+    "target": "es2022",
     "types": [
       "vite/client"
     ],
-  }
+  },
+  "include": [
+    "*.js",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+  ],
 }

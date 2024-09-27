@@ -75,5 +75,8 @@ describe("hand", () => {
     hand.add(3);
     hand.add(8);
     expect(hand.toString()).toBe("25, type: Hard, doubled: false, first card: 10");
+
+    hand.doubleDown(3);
+    expect(hand.toString()).toBe("28, type: Hard, doubled: true, first card: 10");
   });
 });

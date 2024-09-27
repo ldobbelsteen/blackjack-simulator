@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { HandType } from "./hand";
-import { Move } from "./move";
+import { Action, Move } from "./move";
 
 describe("move", () => {
   it("bijectiveParsingHard", () => {
@@ -39,5 +39,9 @@ describe("move", () => {
     expect(() => Move.fromString("DP", HandType.Hard)).toThrow();
     expect(() => Move.fromString("RP", HandType.Soft)).toThrow();
     expect(() => Move.fromString("RH", HandType.Pair)).toThrow();
+  });
+
+  it("onlyPrimary", () => {
+    expect(new Move(Action.Hit, null).color()).toBe("#43b68d");
   });
 });
