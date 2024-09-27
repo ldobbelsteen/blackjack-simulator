@@ -1,20 +1,23 @@
-name: Build image
+name: Build container image
 on: push
 
 jobs:
-  build-image:
-    name: Build container image
+  build:
+    name: Build and push image
     runs-on: ubuntu-latest
+
     env:
       IMAGE_NAME: blackjack-simulator
       REGISTRY: ghcr.io/ldobbelsteen
+
     permissions:
       contents: read
       packages: write
+
     steps:
       - name: Clone the repository
         id: repository-checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Build image
         id: image-build
