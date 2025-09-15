@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: Clone the repository
         id: repository-checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
         id: node-setup
