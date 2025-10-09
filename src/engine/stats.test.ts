@@ -5,7 +5,9 @@ describe("stats", () => {
   it("add", () => {
     const stats = Stats.empty();
     stats.add(Stats.empty());
-    expect(JSON.stringify(stats.toObject())).toEqual(JSON.stringify(Stats.empty().toObject()));
+    expect(JSON.stringify(stats.toObject())).toEqual(
+      JSON.stringify(Stats.empty().toObject()),
+    );
   });
 
   it("derived", () => {
@@ -17,6 +19,8 @@ describe("stats", () => {
   it("copy", () => {
     const stats = Stats.empty();
     const copy = stats.copy();
-    expect(JSON.stringify(stats.toObject())).toEqual(JSON.stringify(copy.toObject()));
+    expect(JSON.stringify(stats.toObject())).toEqual(
+      JSON.stringify(copy.toObject()),
+    );
   });
 });

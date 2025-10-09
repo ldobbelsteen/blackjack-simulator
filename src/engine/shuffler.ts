@@ -56,7 +56,7 @@ export class Shuffler {
     let mask = 0;
     const length = arr.length;
     for (let index = length; index > 0; index >>= 1) mask = (mask << 1) | 1;
-    for (let index = length - 1, random; index > 0; index -= 1) {
+    for (let index = length - 1, random: number; index > 0; index -= 1) {
       if ((index & (index + 1)) === 0) mask >>= 1;
       do {
         random = this.twoRandomBytes() & mask;

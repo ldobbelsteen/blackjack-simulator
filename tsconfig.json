@@ -1,26 +1,14 @@
 {
   "compilerOptions": {
-    "allowJs": true,
-    "esModuleInterop": true,
-    "jsx": "preserve",
-    "lib": [
-      "dom",
-      "esnext",
-      "webworker",
-    ],
-    "module": "esnext",
-    "moduleResolution": "node",
-    "outDir": "out",
-    "skipLibCheck": true,
+    "lib": ["ESNext", "DOM", "WebWorker"],
+    "target": "ESNext",
+    "module": "ESNext",
+    "jsx": "react-jsx",
+    "moduleResolution": "bundler",
+    "noEmit": true,
     "strict": true,
-    "target": "es2022",
-    "types": [
-      "vite/client"
-    ],
+    "skipLibCheck": true,
+    "types": ["vite/client"]
   },
-  "include": [
-    "*.js",
-    "src/**/*.ts",
-    "src/**/*.tsx",
-  ],
+  "include": ["**/*.ts", "**/*.tsx"]
 }

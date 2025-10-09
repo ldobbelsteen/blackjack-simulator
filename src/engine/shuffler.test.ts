@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { Shuffler } from "./shuffler";
 import { Deck } from "./deck";
+import { Shuffler } from "./shuffler";
 
 describe("shuffler", () => {
   it("differentEntropySources", () => {

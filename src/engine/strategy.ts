@@ -89,11 +89,19 @@ export class CompleteStrategy extends Strategy<Move> {
     );
   }
 
-  static fromObject(obj: ReturnType<CompleteStrategy["toObject"]>): CompleteStrategy {
+  static fromObject(
+    obj: ReturnType<CompleteStrategy["toObject"]>,
+  ): CompleteStrategy {
     return new CompleteStrategy(
-      obj.hard.map((row) => row.map((cell) => Move.fromString(cell, HandType.Hard))),
-      obj.soft.map((row) => row.map((cell) => Move.fromString(cell, HandType.Soft))),
-      obj.pair.map((row) => row.map((cell) => Move.fromString(cell, HandType.Pair))),
+      obj.hard.map((row) =>
+        row.map((cell) => Move.fromString(cell, HandType.Hard)),
+      ),
+      obj.soft.map((row) =>
+        row.map((cell) => Move.fromString(cell, HandType.Soft)),
+      ),
+      obj.pair.map((row) =>
+        row.map((cell) => Move.fromString(cell, HandType.Pair)),
+      ),
     );
   }
 }
@@ -111,9 +119,9 @@ export class EditableStrategy extends Strategy<string> {
   rowHeaders(type: HandType): string[] {
     switch (type) {
       case HandType.Hard:
-        return [20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4].map((v) =>
-          v.toString(),
-        );
+        return [
+          20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4,
+        ].map((v) => v.toString());
       case HandType.Soft:
         return [9, 8, 7, 6, 5, 4, 3, 2, 1].map((v) => `A+${v.toString()}`);
       case HandType.Pair:
@@ -151,7 +159,12 @@ export class EditableStrategy extends Strategy<string> {
     }
   }
 
-  withSet(row: number, col: number, type: HandType, value: string): EditableStrategy {
+  withSet(
+    row: number,
+    col: number,
+    type: HandType,
+    value: string,
+  ): EditableStrategy {
     let hard = this.hard;
     let soft = this.soft;
     let pair = this.pair;
@@ -179,9 +192,15 @@ export class EditableStrategy extends Strategy<string> {
 
   toComplete(): CompleteStrategy {
     return new CompleteStrategy(
-      this.hard.map((row) => row.map((cell) => Move.fromString(cell, HandType.Hard))),
-      this.soft.map((row) => row.map((cell) => Move.fromString(cell, HandType.Soft))),
-      this.pair.map((row) => row.map((cell) => Move.fromString(cell, HandType.Pair))),
+      this.hard.map((row) =>
+        row.map((cell) => Move.fromString(cell, HandType.Hard)),
+      ),
+      this.soft.map((row) =>
+        row.map((cell) => Move.fromString(cell, HandType.Soft)),
+      ),
+      this.pair.map((row) =>
+        row.map((cell) => Move.fromString(cell, HandType.Pair)),
+      ),
     );
   }
 
@@ -193,7 +212,9 @@ export class EditableStrategy extends Strategy<string> {
     };
   }
 
-  static fromObject(obj: ReturnType<EditableStrategy["toObject"]>): EditableStrategy {
+  static fromObject(
+    obj: ReturnType<EditableStrategy["toObject"]>,
+  ): EditableStrategy {
     return new EditableStrategy(obj.hard, obj.soft, obj.pair);
   }
 }

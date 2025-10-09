@@ -1,8 +1,8 @@
-/** @type {import('vite').UserConfig} */
-export default {
-  build: {
-    target: "es2022",
-  },
+import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [tailwindcss()],
   test: {
     environment: "jsdom",
     coverage: {
@@ -11,4 +11,4 @@ export default {
       exclude: ["src/engine/worker.ts"],
     },
   },
-};
+});

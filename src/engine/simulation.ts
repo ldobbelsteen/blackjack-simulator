@@ -1,20 +1,28 @@
 import { Deck } from "./deck";
 import { Hand, HandType } from "./hand";
 import { Action } from "./move";
-import { type Rules, AllowDouble, AllowSurrender } from "./rules";
-import { EntropySource } from "./shuffler";
+import { AllowDouble, AllowSurrender, type Rules } from "./rules";
+import type { EntropySource } from "./shuffler";
 import { Stats } from "./stats";
-import { type CompleteStrategy } from "./strategy";
+import type { CompleteStrategy } from "./strategy";
 
 export class Simulation {
   private rules: Rules;
   private strategy: CompleteStrategy;
   private deck: Deck;
 
-  constructor(rules: Rules, strategy: CompleteStrategy, entropySource?: EntropySource) {
+  constructor(
+    rules: Rules,
+    strategy: CompleteStrategy,
+    entropySource?: EntropySource,
+  ) {
     this.rules = rules;
     this.strategy = strategy;
-    this.deck = new Deck(rules.deckCount, rules.maxDeckPenetration, entropySource);
+    this.deck = new Deck(
+      rules.deckCount,
+      rules.maxDeckPenetration,
+      entropySource,
+    );
   }
 
   run(count: number): Stats {
@@ -72,8 +80,12 @@ export class Simulation {
    * Execute a player's turn on a hand given the dealer's hand. Returns the final
    * hand (or multiple in case of splits).
    */
-  private playerTurn(playerHand: Hand, dealerHand: Hand, stats: Stats): Hand[] | Hand | undefined {
-    let result: Hand[] | Hand | undefined = undefined;
+  private playerTurn(
+    playerHand: Hand,
+    dealerHand: Hand,
+    stats: Stats,
+  ): Hand[] | Hand | undefined {
+    let result: Hand[] | Hand | undefined;
     this.playerTurnRec(playerHand, dealerHand, stats, 0, (finalHand: Hand) => {
       if (result === undefined) {
         result = finalHand;
@@ -120,7 +132,10 @@ export class Simulation {
             outputHand,
           );
 
-          const rightHand = new Hand(playerHand.firstCard, this.deck.takeCard());
+          const rightHand = new Hand(
+            playerHand.firstCard,
+            this.deck.takeCard(),
+          );
           const rightSplitCount = this.playerTurnRec(
             rightHand,
             dealerHand,
@@ -136,7 +151,10 @@ export class Simulation {
           outputHand(playerHand);
           return 0;
         case Action.Surrender:
-          if (this.rules.allowSurrender === AllowSurrender.Early || !dealerHand.isBlackjack()) {
+          if (
+            this.rules.allowSurrender === AllowSurrender.Early ||
+            !dealerHand.isBlackjack()
+          ) {
             stats.surrenders += 1;
           } else {
             stats.losses += 1;
@@ -150,10 +168,17 @@ export class Simulation {
   }
 
   /** Get the action a player takes based on the circumstances and its strategy. */
-  private determineAction(playerHand: Hand, dealerHand: Hand, splitCount: number): Action {
+  private determineAction(
+    playerHand: Hand,
+    dealerHand: Hand,
+    splitCount: number,
+  ): Action {
     switch (playerHand.type()) {
       case HandType.Pair: {
-        const pairMove = this.strategy.pairMove(playerHand.value, dealerHand.firstCard);
+        const pairMove = this.strategy.pairMove(
+          playerHand.value,
+          dealerHand.firstCard,
+        );
         if (
           pairMove.primary !== null &&
           this.actionIsAvailable(
@@ -181,7 +206,10 @@ export class Simulation {
         }
       }
       case HandType.Soft: {
-        const softMove = this.strategy.softMove(playerHand.value, dealerHand.firstCard);
+        const softMove = this.strategy.softMove(
+          playerHand.value,
+          dealerHand.firstCard,
+        );
         if (
           softMove.primary !== null &&
           this.actionIsAvailable(
@@ -207,7 +235,10 @@ export class Simulation {
         }
       }
       case HandType.Hard: {
-        const hardMove = this.strategy.hardMove(playerHand.value, dealerHand.firstCard);
+        const hardMove = this.strategy.hardMove(
+          playerHand.value,
+          dealerHand.firstCard,
+        );
         if (
           hardMove.primary !== null &&
           this.actionIsAvailable(
@@ -259,7 +290,9 @@ export class Simulation {
         );
       case Action.Surrender:
         return (
-          this.rules.allowSurrender !== AllowSurrender.Never && handIsUntouched && splitCount === 0
+          this.rules.allowSurrender !== AllowSurrender.Never &&
+          handIsUntouched &&
+          splitCount === 0
         );
     }
   }

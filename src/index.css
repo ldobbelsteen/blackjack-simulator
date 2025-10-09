@@ -1,8 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap");
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@theme {
+  --font-montserrat: Montserrat, sans-serif;
+
+  --color-deepgray: #1a1a1a;
+  --color-darkgray: #2a2a2a;
+  --color-semidarkgray: #3a3a3a;
+  --color-lightgray: #e5e5e5;
+}
 
 @layer base {
   h1 {
@@ -26,10 +32,10 @@
   }
 
   input {
-    @apply text-deepgray p-0.5;
+    @apply text-deepgray p-0.5 bg-lightgray;
   }
 
-  input[type='radio'] {
+  input[type="radio"] {
     @apply mr-1;
   }
 }

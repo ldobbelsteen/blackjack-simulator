@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Rules } from "../engine/rules";
-import { CompleteStrategy, EditableStrategy } from "../engine/strategy";
-import { Stats } from "../engine/stats";
-import { BlackjackWorker } from "../engine/worker";
-import { timeDiffString } from "../misc";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Button } from "./Button";
+import type { Rules } from "../engine/rules";
+import { Stats } from "../engine/stats";
+import type { CompleteStrategy, EditableStrategy } from "../engine/strategy";
+import type { BlackjackWorker } from "../engine/worker";
+import { timeDiffString } from "../misc";
 import { BorderedBox } from "./BorderedBox";
+import { Button } from "./Button";
 
 const REFRESH_INTERVAL = 1000;
 
@@ -35,9 +35,12 @@ export function Simulator(props: { rules: Rules; strategy: EditableStrategy }) {
       const workers: BlackjackWorker[] = [];
 
       for (let i = 0; i < props.rules.threadCount; i += 1) {
-        const worker: BlackjackWorker = new Worker(new URL("../engine/worker", import.meta.url), {
-          type: "module",
-        });
+        const worker: BlackjackWorker = new Worker(
+          new URL("../engine/worker", import.meta.url),
+          {
+            type: "module",
+          },
+        );
 
         worker.onmessage = (ev) => {
           liveStats.add(Stats.fromObject(ev.data.stats));
@@ -73,19 +76,22 @@ export function Simulator(props: { rules: Rules; strategy: EditableStrategy }) {
     }
   }, [running]);
 
-  const simulationTimeMs = (running ? new Date() : lastStop).getTime() - lastStart.getTime();
+  const simulationTimeMs =
+    (running ? new Date() : lastStop).getTime() - lastStart.getTime();
 
   return (
     <>
       <h2>Simulator</h2>
 
       <p className="my-2">
-        The simulation can be started below. It will run until explicitly stopped. The live results
-        are shown below. The balance is relative to the starting capital given you bet 1 unit each
-        game as a base bet. The house edge is the average percentage of your base bet you lose/win
-        to the house per game. Note that these two metrics converge to a stable value after a while,
-        and that they represent loss/winnings given the house rules and your strategy in the
-        real-world (assuming the simulator is perfect, which it might not be).
+        The simulation can be started below. It will run until explicitly
+        stopped. The live results are shown below. The balance is relative to
+        the starting capital given you bet 1 unit each game as a base bet. The
+        house edge is the average percentage of your base bet you lose/win to
+        the house per game. Note that these two metrics converge to a stable
+        value after a while, and that they represent loss/winnings given the
+        house rules and your strategy in the real-world (assuming the simulator
+        is perfect, which it might not be).
       </p>
 
       <BorderedBox>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Card, Deck } from "./deck";
+import { type Card, Deck } from "./deck";
 
 describe("deck", () => {
   it("occurrences", () => {

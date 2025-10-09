@@ -1,4 +1,4 @@
-import { type Card } from "./deck";
+import type { Card } from "./deck";
 
 /** All types of hands. */
 export enum HandType {

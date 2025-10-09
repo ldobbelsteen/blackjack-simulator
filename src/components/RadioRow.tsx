@@ -1,5 +1,3 @@
-import React from "react";
-
 export function RadioRow(props: {
   title: string;
   options: string[];
@@ -9,8 +7,8 @@ export function RadioRow(props: {
   return (
     <tr role="radiogroup">
       <td>{props.title}</td>
-      {props.options.map((option, i) => (
-        <td key={i}>
+      {props.options.map((option) => (
+        <td key={option}>
           <input
             type="radio"
             id={props.title + option}

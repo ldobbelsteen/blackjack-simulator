@@ -1,11 +1,14 @@
-import React, { useState } from "react";
-import { AllowDouble, AllowSurrender, Rules } from "../engine/rules";
-import { RadioRow } from "./RadioRow";
+import { useState } from "react";
 import toast from "react-hot-toast";
+import { AllowDouble, AllowSurrender, Rules } from "../engine/rules";
 import { BorderedBox } from "./BorderedBox";
 import { Button } from "./Button";
+import { RadioRow } from "./RadioRow";
 
-export function Settings(props: { rules: Rules; setRules: (rules: Rules) => void }) {
+export function Settings(props: {
+  rules: Rules;
+  setRules: (rules: Rules) => void;
+}) {
   const [infoOpened, setInfoOpened] = useState(false);
 
   return (
@@ -38,7 +41,9 @@ export function Settings(props: { rules: Rules; setRules: (rules: Rules) => void
                 }
               }
             }}
-            options={Object.keys(AllowSurrender).filter((v) => isNaN(parseInt(v)))}
+            options={Object.keys(AllowSurrender).filter((v) =>
+              Number.isNaN(parseInt(v, 10)),
+            )}
           />
           <RadioRow
             title="2. Allow double-down"
@@ -53,7 +58,9 @@ export function Settings(props: { rules: Rules; setRules: (rules: Rules) => void
                 }
               }
             }}
-            options={Object.keys(AllowDouble).filter((v) => isNaN(parseInt(v)))}
+            options={Object.keys(AllowDouble).filter((v) =>
+              Number.isNaN(parseInt(v, 10)),
+            )}
           />
           <tr>
             <td>3. Max splits</td>
@@ -66,7 +73,7 @@ export function Settings(props: { rules: Rules; setRules: (rules: Rules) => void
                 value={props.rules.maxSplits}
                 onChange={(e) => {
                   const copy = props.rules.copy();
-                  copy.maxSplits = parseInt(e.target.value);
+                  copy.maxSplits = parseInt(e.target.value, 10);
                   props.setRules(copy);
                 }}
               />
@@ -134,7 +141,7 @@ export function Settings(props: { rules: Rules; setRules: (rules: Rules) => void
                 value={props.rules.maxDeckPenetration}
                 onChange={(e) => {
                   const copy = props.rules.copy();
-                  copy.maxDeckPenetration = parseInt(e.target.value);
+                  copy.maxDeckPenetration = parseInt(e.target.value, 10);
                   props.setRules(copy);
                 }}
               />
@@ -152,7 +159,7 @@ export function Settings(props: { rules: Rules; setRules: (rules: Rules) => void
                 value={props.rules.deckCount}
                 onChange={(e) => {
                   const copy = props.rules.copy();
-                  copy.deckCount = parseInt(e.target.value);
+                  copy.deckCount = parseInt(e.target.value, 10);
                   props.setRules(copy);
                 }}
               />
@@ -169,7 +176,7 @@ export function Settings(props: { rules: Rules; setRules: (rules: Rules) => void
                 value={props.rules.threadCount}
                 onChange={(e) => {
                   const copy = props.rules.copy();
-                  copy.threadCount = parseInt(e.target.value);
+                  copy.threadCount = parseInt(e.target.value, 10);
                   props.setRules(copy);
                 }}
               />
@@ -190,59 +197,73 @@ export function Settings(props: { rules: Rules; setRules: (rules: Rules) => void
       {infoOpened && (
         <div className="mt-2 bg-darkgray p-4 [&_p]:my-2">
           <p>
-            1. Surrendering is a starting move in which the player gives up their hand and loses
-            half of their bet. It can only be done on the initial hand and therefore not after
-            splitting. With late surrender, the player gets to keep half of their bet only if the
-            dealer does not have a blackjack, else they lose their entire bet. With early surrender
-            the player always gets to keep half of their bet regardless of the dealer&apos;s cards.
+            1. Surrendering is a starting move in which the player gives up
+            their hand and loses half of their bet. It can only be done on the
+            initial hand and therefore not after splitting. With late surrender,
+            the player gets to keep half of their bet only if the dealer does
+            not have a blackjack, else they lose their entire bet. With early
+            surrender the player always gets to keep half of their bet
+            regardless of the dealer&apos;s cards.
           </p>
           <p>
-            2. Double-down is a move where the player doubles their initial bet and receives just
-            one more card. It is only available on the initial hand or directly after splitting.
-            After this move, the hand is completely frozen. This option is offered at most casinos,
-            but some only allow to double-down on a hand with a value of 9, 10 or 11.
+            2. Double-down is a move where the player doubles their initial bet
+            and receives just one more card. It is only available on the initial
+            hand or directly after splitting. After this move, the hand is
+            completely frozen. This option is offered at most casinos, but some
+            only allow to double-down on a hand with a value of 9, 10 or 11.
           </p>
           <p>
-            3. Splitting is a move where the player creates two new hands out of one hand consisting
-            of two cards with the same value. The player has to put down another bet equal to the
-            initial bet at the newly created hand. The first of two hands receives a new card and
-            the player can play this hand just like normal. Once this side is done, the second hand
-            gets a card and the same thing happens. If the new hand is a pair again, the player can
-            decide to split again. Most casinos restrict the number of splits to a number normally
-            between 1 and 3. Some casinos allow unlimited splits.
+            3. Splitting is a move where the player creates two new hands out of
+            one hand consisting of two cards with the same value. The player has
+            to put down another bet equal to the initial bet at the newly
+            created hand. The first of two hands receives a new card and the
+            player can play this hand just like normal. Once this side is done,
+            the second hand gets a card and the same thing happens. If the new
+            hand is a pair again, the player can decide to split again. Most
+            casinos restrict the number of splits to a number normally between 1
+            and 3. Some casinos allow unlimited splits.
           </p>
           <p>
-            4. This setting influences whether or not the player is allowed to hit or double-down
-            after having split a pair of aces. Most casinos do not allow this.
+            4. This setting influences whether or not the player is allowed to
+            hit or double-down after having split a pair of aces. Most casinos
+            do not allow this.
           </p>
           <p>
-            5. This settings influences whether or not the player is allowed to split once more
-            after having split aces and receiving another ace. Most casinos do not allow this.
+            5. This settings influences whether or not the player is allowed to
+            split once more after having split aces and receiving another ace.
+            Most casinos do not allow this.
           </p>
           <p>
-            6. This settings influences whether the player is allowed to double-down on a hand after
-            having split. Some casinos do not allow this.
+            6. This settings influences whether the player is allowed to
+            double-down on a hand after having split. Some casinos do not allow
+            this.
           </p>
           <p>
-            7. The move of the dealer when they get a soft 17 hand. This differs wildly accross
-            regions; for example in Las Vegas they almost universally hit and in Europe they almost
-            always stand.
+            7. The move of the dealer when they get a soft 17 hand. This differs
+            wildly accross regions; for example in Las Vegas they almost
+            universally hit and in Europe they almost always stand.
           </p>
           <p>
-            8. The payout the player gets when they have a blackjack. The traditional payout is 3 to
-            2, meaning the player wins 1.5x their bet (on top of getting back their initial bet).
-            Some casinos offer a 6 to 5 payout, meaning the player wins just 1.2x their bet.
+            8. The payout the player gets when they have a blackjack. The
+            traditional payout is 3 to 2, meaning the player wins 1.5x their bet
+            (on top of getting back their initial bet). Some casinos offer a 6
+            to 5 payout, meaning the player wins just 1.2x their bet.
           </p>
           <p>
-            9. The minimum percentage of the cards that have already been played for the dealer to
-            decide to reshuffle the deck. This is basically at which percentage the cut card is put.
+            9. The minimum percentage of the cards that have already been played
+            for the dealer to decide to reshuffle the deck. This is basically at
+            which percentage the cut card is put.
           </p>
-          <p>10. The number of decks to play the game with. Most common are 4, 6 and 8 decks.</p>
           <p>
-            11. The number of web worker threads the simulator spawns. In general, more threads
-            results in faster simulations. However, do keep in mind that more threads will slow down
-            your device more, and that more threads than physical CPU cores will generally not
-            result in faster calculations.
+            10. The number of decks to play the game with. Most common are 4, 6
+            and 8 decks.
+          </p>
+          <p>
+            11. The number of web worker threads the simulator spawns. In
+            general, more threads results in faster simulations. However, do
+            keep in mind that more threads will slow down your device more, and
+            that more threads than physical CPU cores will generally not result
+            in faster calculations.
           </p>
         </div>
       )}

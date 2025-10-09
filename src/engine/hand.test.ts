@@ -70,13 +70,19 @@ describe("hand", () => {
 
   it("toString", () => {
     const hand = new Hand(10, 4);
-    expect(hand.toString()).toBe("14, type: Hard, doubled: false, first card: 10");
+    expect(hand.toString()).toBe(
+      "14, type: Hard, doubled: false, first card: 10",
+    );
 
     hand.add(3);
     hand.add(8);
-    expect(hand.toString()).toBe("25, type: Hard, doubled: false, first card: 10");
+    expect(hand.toString()).toBe(
+      "25, type: Hard, doubled: false, first card: 10",
+    );
 
     hand.doubleDown(3);
-    expect(hand.toString()).toBe("28, type: Hard, doubled: true, first card: 10");
+    expect(hand.toString()).toBe(
+      "28, type: Hard, doubled: true, first card: 10",
+    );
   });
 });

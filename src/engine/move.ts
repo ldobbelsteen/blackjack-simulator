@@ -109,7 +109,8 @@ export class Move {
 
   toString(): string {
     const primary = this.primary !== null ? actionToChar(this.primary) : "";
-    const secondary = this.secondary !== null ? actionToChar(this.secondary) : "";
+    const secondary =
+      this.secondary !== null ? actionToChar(this.secondary) : "";
     return primary + secondary;
   }
 
@@ -124,7 +125,11 @@ export class Move {
       if (this.secondary === null) {
         return actionToColor(this.primary);
       } else {
-        return mixColors(actionToColor(this.primary), actionToColor(this.secondary), 0.3);
+        return mixColors(
+          actionToColor(this.primary),
+          actionToColor(this.secondary),
+          0.3,
+        );
       }
     }
   }

@@ -1,4 +1,8 @@
-export function mixColors(color1: string, color2: string, ratio: number): string {
+export function mixColors(
+  color1: string,
+  color2: string,
+  ratio: number,
+): string {
   color1 = color1.replace("#", "");
   color2 = color2.replace("#", "");
 
@@ -14,7 +18,7 @@ export function mixColors(color1: string, color2: string, ratio: number): string
   const g = Math.round(g1 * (1 - ratio) + g2 * ratio);
   const b = Math.round(b1 * (1 - ratio) + b2 * ratio);
 
-  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
 }
 
 export function timeDiffString(diff: number): string {

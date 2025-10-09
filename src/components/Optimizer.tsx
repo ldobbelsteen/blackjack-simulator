@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Rules } from "../engine/rules";
-import { CompleteStrategy, EditableStrategy } from "../engine/strategy";
 import toast from "react-hot-toast";
 import { HandType } from "../engine/hand";
 import { Move } from "../engine/move";
+import type { Rules } from "../engine/rules";
 import { Stats } from "../engine/stats";
-import { BlackjackWorker } from "../engine/worker";
+import type { CompleteStrategy, EditableStrategy } from "../engine/strategy";
+import type { BlackjackWorker } from "../engine/worker";
 import { basicShuffle } from "../misc";
-import { Button } from "./Button";
 import { BorderedBox } from "./BorderedBox";
+import { Button } from "./Button";
 
 interface Job {
   changeId: string;
@@ -36,7 +36,9 @@ function accumulateJobs(
             const changeId = `hard player ${playerHand} vs. dealer ${dealerCard} to ${move}`;
             jobs.push({
               changeId: changeId,
-              strategy: editableBase.withSet(row, col, HandType.Hard, move).toComplete(),
+              strategy: editableBase
+                .withSet(row, col, HandType.Hard, move)
+                .toComplete(),
             });
           }
         }
@@ -55,7 +57,9 @@ function accumulateJobs(
             const changeId = `soft player ${playerHand} vs. dealer ${dealerCard} to ${move}`;
             jobs.push({
               changeId: changeId,
-              strategy: editableBase.withSet(row, col, HandType.Soft, move).toComplete(),
+              strategy: editableBase
+                .withSet(row, col, HandType.Soft, move)
+                .toComplete(),
             });
           }
         }
@@ -74,7 +78,9 @@ function accumulateJobs(
             const changeId = `pair player ${playerHand} vs. dealer ${dealerCard} to ${move || "x"}`;
             jobs.push({
               changeId: changeId,
-              strategy: editableBase.withSet(row, col, HandType.Pair, move).toComplete(),
+              strategy: editableBase
+                .withSet(row, col, HandType.Pair, move)
+                .toComplete(),
             });
           }
         }
@@ -99,9 +105,12 @@ function runSimulation(
   const workers: BlackjackWorker[] = [];
 
   for (let i = 0; i < rules.threadCount; i += 1) {
-    const worker: BlackjackWorker = new Worker(new URL("../engine/worker", import.meta.url), {
-      type: "module",
-    });
+    const worker: BlackjackWorker = new Worker(
+      new URL("../engine/worker", import.meta.url),
+      {
+        type: "module",
+      },
+    );
 
     worker.onmessage = (ev) => {
       stats.add(Stats.fromObject(ev.data.stats));
@@ -152,7 +161,13 @@ export function Optimizer(props: { rules: Rules; base: EditableStrategy }) {
         return;
       }
 
-      const jobs = accumulateJobs(completeBase, includeHard, includeSoft, includePair, true);
+      const jobs = accumulateJobs(
+        completeBase,
+        includeHard,
+        includeSoft,
+        includePair,
+        true,
+      );
       if (jobs.length === 0) {
         toast.error("No possible optimizations with current settings");
         setRunning(false);
@@ -190,49 +205,69 @@ export function Optimizer(props: { rules: Rules; base: EditableStrategy }) {
     }
 
     if (baseHouseEdge === null) {
-      return runSimulation(props.rules, completeBase, minBaseGameCount, (stats) => {
-        const houseEdge = stats.houseEdge(props.rules.blackjackPayout);
-        setBaseHouseEdge(houseEdge);
-      });
+      return runSimulation(
+        props.rules,
+        completeBase,
+        minBaseGameCount,
+        (stats) => {
+          const houseEdge = stats.houseEdge(props.rules.blackjackPayout);
+          setBaseHouseEdge(houseEdge);
+        },
+      );
     }
 
     const job = jobs[jobIndex];
-    return runSimulation(props.rules, job.strategy, minTestGameCount, (stats) => {
-      /** Jump to the next job. */
-      setJobIndex(jobIndex + 1);
+    return runSimulation(
+      props.rules,
+      job.strategy,
+      minTestGameCount,
+      (stats) => {
+        /** Jump to the next job. */
+        setJobIndex(jobIndex + 1);
 
-      /** If there is an improvement, register it. */
-      const houseEdge = stats.houseEdge(props.rules.blackjackPayout);
-      const improvement = baseHouseEdge - houseEdge;
-      if (improvement > 0) {
-        const result = `Changing ${job.changeId} gives ${improvement.toLocaleString()}% house edge improvement`;
-        toast.success(`Optimization found: ${result}`);
-        setResults((prev) => {
-          if (prev === null) {
-            return { [jobIndex]: result };
-          } else if (jobIndex in prev) {
-            return prev;
-          } else {
-            return { ...prev, [jobIndex]: result };
-          }
-        });
-      }
-    });
-  }, [jobIndex, jobs, baseHouseEdge, minBaseGameCount, minTestGameCount, props.base, props.rules]);
+        /** If there is an improvement, register it. */
+        const houseEdge = stats.houseEdge(props.rules.blackjackPayout);
+        const improvement = baseHouseEdge - houseEdge;
+        if (improvement > 0) {
+          const result = `Changing ${job.changeId} gives ${improvement.toLocaleString()}% house edge improvement`;
+          toast.success(`Optimization found: ${result}`);
+          setResults((prev) => {
+            if (prev === null) {
+              return { [jobIndex]: result };
+            } else if (jobIndex in prev) {
+              return prev;
+            } else {
+              return { ...prev, [jobIndex]: result };
+            }
+          });
+        }
+      },
+    );
+  }, [
+    jobIndex,
+    jobs,
+    baseHouseEdge,
+    minBaseGameCount,
+    minTestGameCount,
+    props.base,
+    props.rules,
+  ]);
 
   return (
     <>
       <h2>Optimizer</h2>
 
       <p className="my-2">
-        This section allows you to automatically optimize your strategy given your house rules. This
-        is done by tweaking each and every cell in your strategy one by one (randomly but
-        exhaustively), and running a test simulation to see if the change improves the house edge.
-        The test simulation will run for the given number of games, so make sure to set it high
-        enough to get a reliable result. Higher values do of course take significantly more time
-        though. Changes that improve the house edge will be displayed below. If no changes showed
-        up, that means you likely already have the optimal strategy for your house. Do not forget to
-        test and verify the new changes above.
+        This section allows you to automatically optimize your strategy given
+        your house rules. This is done by tweaking each and every cell in your
+        strategy one by one (randomly but exhaustively), and running a test
+        simulation to see if the change improves the house edge. The test
+        simulation will run for the given number of games, so make sure to set
+        it high enough to get a reliable result. Higher values do of course take
+        significantly more time though. Changes that improve the house edge will
+        be displayed below. If no changes showed up, that means you likely
+        already have the optimal strategy for your house. Do not forget to test
+        and verify the new changes above.
       </p>
 
       <div className="flex flex-wrap gap-2">
@@ -329,7 +364,9 @@ export function Optimizer(props: { rules: Rules; base: EditableStrategy }) {
             ? "-"
             : Object.values(results).length === 0
               ? "..."
-              : Object.values(results).map((result, i) => <p key={i}>{result}</p>)}
+              : Object.entries(results).map(([key, result]) => (
+                  <p key={key}>{result}</p>
+                ))}
         </BorderedBox>
       </div>
     </>

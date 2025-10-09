@@ -1,6 +1,6 @@
 import { Rules } from "./rules";
 import { Simulation } from "./simulation";
-import { Stats } from "./stats";
+import type { Stats } from "./stats";
 import { CompleteStrategy } from "./strategy";
 
 /** The data type of messages this worker assumes to receive. */
@@ -16,13 +16,20 @@ interface BlackjackWorkerTx {
 
 /** Static typings for this worker for the main thread side. */
 export interface BlackjackWorker extends Worker {
-  onmessage: ((this: BlackjackWorker, ev: MessageEvent<BlackjackWorkerTx>) => void) | null;
+  onmessage:
+    | ((this: BlackjackWorker, ev: MessageEvent<BlackjackWorkerTx>) => void)
+    | null;
   postMessage(config: BlackjackWorkerRx): void;
 }
 
 /** Static typings for this worker for within the worker. */
 interface BlackjackWorkerScope extends DedicatedWorkerGlobalScope {
-  onmessage: ((this: BlackjackWorkerScope, ev: MessageEvent<BlackjackWorkerRx>) => void) | null;
+  onmessage:
+    | ((
+        this: BlackjackWorkerScope,
+        ev: MessageEvent<BlackjackWorkerRx>,
+      ) => void)
+    | null;
   postMessage(message: BlackjackWorkerTx): void;
 }
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { EditableStrategy } from "./engine/strategy";
 import { Rules } from "./engine/rules";
+import { EditableStrategy } from "./engine/strategy";
 
 export function useStrategyPersistent(
   defaultValue: EditableStrategy,
@@ -28,7 +28,9 @@ export function useStrategyPersistent(
   return [strategy, setStrategyWrapper];
 }
 
-export function useRulesPersistent(defaultValue: Rules): [Rules, (newVal: Rules) => void] {
+export function useRulesPersistent(
+  defaultValue: Rules,
+): [Rules, (newVal: Rules) => void] {
   const [rules, setRules] = useState(() => {
     try {
       const value = localStorage.getItem("rules");
