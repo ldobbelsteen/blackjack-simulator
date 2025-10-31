@@ -58,7 +58,7 @@ export class Simulation {
         dealerHand.value < 17 ||
         (this.rules.dealerHitsSoft17 &&
           dealerHand.value === 17 &&
-          dealerHand.type() == HandType.Soft)
+          dealerHand.type() === HandType.Soft)
       ) {
         dealerHand.add(this.deck.takeCard());
       }

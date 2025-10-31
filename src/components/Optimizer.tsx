@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { HandType } from "../engine/hand";
 import { Move } from "../engine/move";
@@ -285,7 +285,7 @@ export function Optimizer(props: { rules: Rules; base: EditableStrategy }) {
                     value={minBaseGameCount}
                     className="w-32"
                     onChange={(e) => {
-                      setMinBaseGameCount(parseInt(e.target.value));
+                      setMinBaseGameCount(parseInt(e.target.value, 10));
                     }}
                   />
                 </td>
@@ -300,7 +300,7 @@ export function Optimizer(props: { rules: Rules; base: EditableStrategy }) {
                     value={minTestGameCount}
                     className="w-32"
                     onChange={(e) => {
-                      setMinTestGameCount(parseInt(e.target.value));
+                      setMinTestGameCount(parseInt(e.target.value, 10));
                     }}
                   />
                 </td>
