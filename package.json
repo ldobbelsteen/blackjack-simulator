@@ -12,7 +12,7 @@
     "@tailwindcss/vite": "^4.1.16",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.3",
-    "@vitest/coverage-istanbul": "^4.0.6",
+    "@vitest/coverage-istanbul": "^4.1.4",
     "jsdom": "^27.1.0",
     "jsom": "^1.0.0",
     "react": "^19.2.0",
