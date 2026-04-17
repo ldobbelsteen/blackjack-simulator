@@ -4,8 +4,8 @@ export type EntropySource = "crypto" | "math" | "deterministic";
 export class Shuffler {
   private index: number;
   private length: number;
-  private entropy: Uint16Array;
-  private entropySource: (arr: Uint16Array) => void;
+  private entropy: Uint16Array<ArrayBuffer>;
+  private entropySource: (arr: Uint16Array<ArrayBuffer>) => void;
 
   constructor(entropySource: EntropySource = "crypto") {
     this.index = 0;
@@ -71,12 +71,12 @@ export class Shuffler {
  * This is a cryptographically secure entropy source, which should be sufficiently
  * random for any use case.
  */
-function cryptoEntropySource(arr: Uint16Array) {
+function cryptoEntropySource(arr: Uint16Array<ArrayBuffer>) {
   crypto.getRandomValues(arr);
 }
 
 /** Entropy source using the Math API. */
-function mathEntropySource(arr: Uint16Array) {
+function mathEntropySource(arr: Uint16Array<ArrayBuffer>) {
   for (let i = 0; i < arr.length; i += 1) {
     const rand = Math.random();
     arr[i] = Math.floor(rand * 65536);
@@ -84,7 +84,7 @@ function mathEntropySource(arr: Uint16Array) {
 }
 
 /** Deterministic entropy source for testing purposes. */
-function deterministicEntropySource(arr: Uint16Array) {
+function deterministicEntropySource(arr: Uint16Array<ArrayBuffer>) {
   let seed = 1;
   for (let i = 0; i < arr.length; i += 1) {
     const rand = seededRandom(seed++);
