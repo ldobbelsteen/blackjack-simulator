@@ -1,14 +1,12 @@
 {
   "compilerOptions": {
-    "lib": ["ESNext", "DOM", "WebWorker"],
-    "target": "ESNext",
-    "module": "ESNext",
     "jsx": "react-jsx",
+    "lib": ["esnext", "dom", "webworker"],
+    "module": "esnext",
     "moduleResolution": "bundler",
     "noEmit": true,
-    "strict": true,
     "skipLibCheck": true,
+    "target": "esnext",
     "types": ["vite/client"]
-  },
-  "include": ["**/*.ts", "**/*.tsx"]
+  }
 }
