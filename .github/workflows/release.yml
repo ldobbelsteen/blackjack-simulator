@@ -1,10 +1,11 @@
-name: ci
+name: release
 
-on: push
+on:
+  push:
+    branches: [main]
 
 permissions:
-  contents: read
-  packages: write
+  contents: write
 
 jobs:
   test:
@@ -25,6 +26,7 @@ jobs:
       - name: Run tests
         run: npm run test
 
-  build:
+  release:
     needs: test
-    uses: ldobbelsteen/ghcr-build-push/.github/workflows/main.yml@v1
+    uses: ldobbelsteen/github-actions/.github/workflows/create-release.yml@main
+    secrets: inherit
